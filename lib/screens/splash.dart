@@ -81,66 +81,68 @@ class _SplashScreenState extends State<SplashScreen>
 
   Widget _buildCustomLogo() {
     return Container(
-      width: 160,
-      height: 160,
+      width: 200,
+      height: 200,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(25),
+        color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF1E3A8A).withOpacity(0.3),
-            blurRadius: 25,
+            color: const Color(0xFF1E3A8A).withOpacity(0.2),
+            blurRadius: 30,
             offset: const Offset(0, 15),
             spreadRadius: 5,
+          ),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+            spreadRadius: 0,
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(30),
-        child: Image.asset(
-          'assets/images/logo.jpg',
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            // Fallback jika gambar tidak ditemukan
-            return Container(
-              decoration: BoxDecoration(
-                color: const Color(0xFF1E3A8A),
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: const Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'CN',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 48,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 2,
+        borderRadius: BorderRadius.circular(25),
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          color: Colors.white,
+          child: Image.asset(
+            'assets/images/logoi.png',
+            fit: BoxFit.contain,
+            errorBuilder: (context, error, stackTrace) {
+              // Fallback jika gambar tidak ditemukan
+              return Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E3A8A),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'CN',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 48,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'COBRA',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 1.5,
+                    SizedBox(height: 8),
+                    Text(
+                      'COBRA NEWS',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 1.5,
+                      ),
                     ),
-                  ),
-                  Text(
-                    'NEWS',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -166,7 +168,7 @@ class _SplashScreenState extends State<SplashScreen>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Spacer(flex: 2),
-            
+
             // Animated Logo dengan Custom Image
             AnimatedBuilder(
               animation: _animationController,
@@ -198,33 +200,25 @@ class _SplashScreenState extends State<SplashScreen>
                       padding: EdgeInsets.symmetric(horizontal: 40),
                       child: Column(
                         children: [
-                          Text(
-                            'Cobra News',
-                            style: TextStyle(
-                              fontSize: 36,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF1E3A8A),
-                              letterSpacing: 1.2,
-                            ),
-                          ),
-                          SizedBox(height: 16),
+                          SizedBox(height: 20),
                           Text(
                             'Berita Terpercaya, Informasi Terdepan',
                             style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.grey,
-                              fontWeight: FontWeight.w500,
+                              fontSize: 20,
+                              color: Color(0xFF1E3A8A),
+                              fontWeight: FontWeight.w600,
                               height: 1.4,
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(height: 8),
+                          SizedBox(height: 12),
                           Text(
-                            'Dapatkan update berita terkini dari seluruh dunia',
+                            'Dapatkan update berita terkini dari seluruh dunia dengan akurasi dan kecepatan tinggi',
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 16,
                               color: Colors.grey,
                               fontWeight: FontWeight.w400,
+                              height: 1.5,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -257,7 +251,8 @@ class _SplashScreenState extends State<SplashScreen>
                             backgroundColor: const Color(0xFF1E3A8A),
                             foregroundColor: Colors.white,
                             elevation: 12,
-                            shadowColor: const Color(0xFF1E3A8A).withOpacity(0.4),
+                            shadowColor:
+                                const Color(0xFF1E3A8A).withOpacity(0.4),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
                             ),

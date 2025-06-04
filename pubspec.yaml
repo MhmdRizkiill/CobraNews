@@ -1,5 +1,5 @@
 name: tugasbesar
-description: A news application with custom logo integration
+description: A news application with Cobra News logo integration
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -22,11 +22,3 @@ flutter:
   # Assets configuration
   assets:
     - assets/images/
-  
-  # Custom fonts (optional)
-  fonts:
-    - family: Roboto
-      fonts:
-        - asset: fonts/Roboto-Regular.ttf
-        - asset: fonts/Roboto-Bold.ttf
-          weight: 700

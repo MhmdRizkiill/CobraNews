@@ -38,10 +38,11 @@ class MainNewsApp extends StatelessWidget {
           children: [
             // Logo di AppBar
             Container(
-              width: 32,
-              height: 32,
+              width: 40,
+              height: 40,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
+                color: Colors.white,
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.1),
@@ -52,19 +53,22 @@ class MainNewsApp extends StatelessWidget {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: Image.asset(
-                  'assets/images/logo.jpg',
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: const Color(0xFF1E3A8A),
-                      child: const Icon(
-                        Icons.newspaper,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    );
-                  },
+                child: Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: Image.asset(
+                    'assets/images/logoi.png',
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: const Color(0xFF1E3A8A),
+                        child: const Icon(
+                          Icons.newspaper,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
@@ -93,37 +97,41 @@ class MainNewsApp extends StatelessWidget {
           children: [
             // Logo utama di halaman
             Container(
-              width: 150,
-              height: 150,
+              width: 180,
+              height: 180,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25),
+                borderRadius: BorderRadius.circular(30),
+                color: Colors.white,
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withOpacity(0.2),
-                    blurRadius: 20,
-                    offset: const Offset(0, 10),
+                    blurRadius: 25,
+                    offset: const Offset(0, 15),
                   ),
                 ],
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(25),
-                child: Image.asset(
-                  'assets/images/cobra_logo.png',
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.white,
-                      child: const Icon(
-                        Icons.newspaper,
-                        size: 80,
-                        color: Color(0xFF1E3A8A),
-                      ),
-                    );
-                  },
+                borderRadius: BorderRadius.circular(30),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Image.asset(
+                    'assets/images/logoi.png',
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        color: Colors.white,
+                        child: const Icon(
+                          Icons.newspaper,
+                          size: 80,
+                          color: Color(0xFF1E3A8A),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 40),
             const Text(
               'Selamat Datang di Cobra News!',
               style: TextStyle(

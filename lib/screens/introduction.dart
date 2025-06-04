@@ -20,7 +20,7 @@ class _IntroductionScreenState extends State<IntroductionScreen>
       title: 'Berita Terkini',
       description:
           'Dapatkan berita terbaru dari seluruh dunia dengan update real-time setiap saat',
-      icon: Icons.newspaper,
+      icon: Icons.newspaper_outlined,
       headerText: 'Introduction 1',
       color: const Color(0xFF1E3A8A),
     ),
@@ -30,7 +30,7 @@ class _IntroductionScreenState extends State<IntroductionScreen>
           'Notifikasi instan untuk berita breaking news dan trending topics yang sedang viral',
       icon: Icons.notifications_active,
       headerText: 'Introduction 2',
-      color: const Color(0xFF059669),
+      color: const Color(0xFF1E3A8A),
     ),
     IntroData(
       title: 'Simpan & Bagikan',
@@ -38,7 +38,7 @@ class _IntroductionScreenState extends State<IntroductionScreen>
           'Bookmark artikel favorit dan bagikan dengan mudah ke media sosial kesayangan Anda',
       icon: Icons.share,
       headerText: 'Introduction 3',
-      color: const Color(0xFFDC2626),
+      color: const Color(0xFF1E3A8A),
     ),
   ];
 
@@ -111,66 +111,68 @@ class _IntroductionScreenState extends State<IntroductionScreen>
     );
   }
 
-  Widget _buildCustomLogo({double size = 120}) {
+  Widget _buildCustomLogo({double size = 140}) {
     return Container(
       width: size,
       height: size,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(size * 0.2),
+        borderRadius: BorderRadius.circular(size * 0.15),
+        color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: introData[currentIndex].color.withOpacity(0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-            spreadRadius: 2,
+            color: introData[currentIndex].color.withOpacity(0.2),
+            blurRadius: 25,
+            offset: const Offset(0, 12),
+            spreadRadius: 3,
+          ),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+            spreadRadius: 0,
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(size * 0.2),
-        child: Image.asset(
-          'assets/images/logo.jpg',
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            // Fallback jika gambar tidak ditemukan
-            return Container(
-              decoration: BoxDecoration(
-                color: introData[currentIndex].color,
-                borderRadius: BorderRadius.circular(size * 0.2),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'CN',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: size * 0.25,
-                      fontWeight: FontWeight.bold,
+        borderRadius: BorderRadius.circular(size * 0.15),
+        child: Container(
+          padding: EdgeInsets.all(size * 0.12),
+          color: Colors.white,
+          child: Image.asset(
+            'assets/images/logoi.png',
+            fit: BoxFit.contain,
+            errorBuilder: (context, error, stackTrace) {
+              // Fallback jika gambar tidak ditemukan
+              return Container(
+                decoration: BoxDecoration(
+                  color: introData[currentIndex].color,
+                  borderRadius: BorderRadius.circular(size * 0.1),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'CN',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: size * 0.25,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  Text(
-                    'COBRA',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: size * 0.08,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 1,
+                    Text(
+                      'COBRA NEWS',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: size * 0.08,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 1,
+                      ),
                     ),
-                  ),
-                  Text(
-                    'NEWS',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: size * 0.08,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 1,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -455,7 +457,6 @@ class _IntroductionScreenState extends State<IntroductionScreen>
   }
 }
 
-// Data model untuk introduction screens dengan warna
 class IntroData {
   final String title;
   final String description;

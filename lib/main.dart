@@ -56,7 +56,7 @@ class MainNewsApp extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(4),
                   child: Image.asset(
-                    'assets/images/logoi.png',
+                    'assets/images/cobra_news_logo.jpg',
                     fit: BoxFit.contain,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
@@ -115,7 +115,7 @@ class MainNewsApp extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Image.asset(
-                    'assets/images/logoi.png',
+                    'assets/images/cobra_news_logo.jpg',
                     fit: BoxFit.contain,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(

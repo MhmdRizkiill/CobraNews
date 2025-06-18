@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../main.dart';
+import 'auth/login_screen.dart';
 
 class IntroductionScreen extends StatefulWidget {
   const IntroductionScreen({super.key});
@@ -20,7 +21,7 @@ class _IntroductionScreenState extends State<IntroductionScreen>
       title: 'Berita Terkini',
       description:
           'Dapatkan berita terbaru dari seluruh dunia dengan update real-time setiap saat',
-      icon: Icons.newspaper_outlined,
+      icon: Icons.newspaper,
       headerText: 'Introduction 1',
       color: const Color(0xFF1E3A8A),
     ),
@@ -74,7 +75,7 @@ class _IntroductionScreenState extends State<IntroductionScreen>
         curve: Curves.easeInOutCubic,
       );
     } else {
-      _navigateToMainApp();
+      _navigateToLogin();
     }
   }
 
@@ -85,12 +86,12 @@ class _IntroductionScreenState extends State<IntroductionScreen>
     );
   }
 
-  void _navigateToMainApp() {
+  void _navigateToLogin() {
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            const MainNewsApp(),
+            const LoginScreen(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return SlideTransition(
             position: Tween<Offset>(
@@ -142,7 +143,6 @@ class _IntroductionScreenState extends State<IntroductionScreen>
             'assets/images/logoi.png',
             fit: BoxFit.contain,
             errorBuilder: (context, error, stackTrace) {
-              // Fallback jika gambar tidak ditemukan
               return Container(
                 decoration: BoxDecoration(
                   color: introData[currentIndex].color,
@@ -194,7 +194,6 @@ class _IntroductionScreenState extends State<IntroductionScreen>
         ),
         child: Column(
           children: [
-            // Header
             Container(
               padding: const EdgeInsets.only(top: 60, bottom: 20),
               child: Text(
@@ -206,11 +205,7 @@ class _IntroductionScreenState extends State<IntroductionScreen>
                 ),
               ),
             ),
-
-            // Page Indicator
             _buildPageIndicator(),
-
-            // Content
             Expanded(
               child: PageView.builder(
                 controller: pageController,
@@ -218,7 +213,6 @@ class _IntroductionScreenState extends State<IntroductionScreen>
                   setState(() {
                     currentIndex = index;
                   });
-                  // Restart logo animation saat pindah halaman
                   _logoAnimationController.reset();
                   _logoAnimationController.forward();
                 },
@@ -228,8 +222,6 @@ class _IntroductionScreenState extends State<IntroductionScreen>
                 },
               ),
             ),
-
-            // Navigation Buttons
             _buildNavigationButtons(),
           ],
         ),
@@ -267,8 +259,6 @@ class _IntroductionScreenState extends State<IntroductionScreen>
       child: Column(
         children: [
           const Spacer(flex: 1),
-
-          // Custom Logo dengan animasi
           AnimatedBuilder(
             animation: _logoScaleAnimation,
             builder: (context, child) {
@@ -278,10 +268,7 @@ class _IntroductionScreenState extends State<IntroductionScreen>
               );
             },
           ),
-
           const SizedBox(height: 40),
-
-          // Feature Icon dengan background yang berubah
           AnimatedContainer(
             duration: const Duration(milliseconds: 500),
             width: 90,
@@ -300,10 +287,7 @@ class _IntroductionScreenState extends State<IntroductionScreen>
               color: data.color,
             ),
           ),
-
           const SizedBox(height: 40),
-
-          // Title dengan warna yang berubah
           AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 500),
             style: TextStyle(
@@ -316,10 +300,7 @@ class _IntroductionScreenState extends State<IntroductionScreen>
               textAlign: TextAlign.center,
             ),
           ),
-
           const SizedBox(height: 20),
-
-          // Description
           Text(
             data.description,
             style: const TextStyle(
@@ -329,7 +310,6 @@ class _IntroductionScreenState extends State<IntroductionScreen>
             ),
             textAlign: TextAlign.center,
           ),
-
           const Spacer(flex: 2),
         ],
       ),

@@ -6,8 +6,8 @@ class AssetHelper {
   static const String _iconsPath = 'assets/icons/';
   
   // Logo paths
-  static const String cobraLogo = '${_imagesPath}logo.png';
-  static const String cobraLogoWhite = '${_imagesPath}logo_white.png';
+  static const String cobraLogo = '${_imagesPath}logo.jpg';
+  static const String cobraLogoWhite = '${_imagesPath}logoi.png';
   
   // Icon paths
   static const String newsIcon = '${_iconsPath}news_icon.png';

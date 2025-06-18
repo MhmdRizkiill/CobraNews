@@ -40,7 +40,7 @@ class CobraNewsLogo extends StatelessWidget {
         child: Padding(
           padding: padding ?? EdgeInsets.all(size * 0.12),
           child: Image.asset(
-            'assets/images/cobra_news_logo.jpg',
+            'assets/images/logoi.png',
             fit: BoxFit.contain,
             errorBuilder: (context, error, stackTrace) {
               return Container(

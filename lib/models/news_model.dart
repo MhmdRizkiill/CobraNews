@@ -44,4 +44,41 @@ class NewsModel {
       isFavorite: isFavorite ?? this.isFavorite,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'summary': summary,
+      'content': content,
+      'imageUrl': imageUrl,
+      'category': category,
+      'publishedAt': publishedAt.toIso8601String(),
+      'author': author,
+      'isFavorite': isFavorite,
+    };
+  }
+
+  factory NewsModel.fromJson(Map<String, dynamic> json) {
+    return NewsModel(
+      id: json['id'] as String,
+      title: json['title'] as String,
+      summary: json['summary'] as String,
+      content: json['content'] as String,
+      imageUrl: json['imageUrl'] as String,
+      category: json['category'] as String,
+      publishedAt: DateTime.parse(json['publishedAt'] as String),
+      author: json['author'] as String,
+      isFavorite: json['isFavorite'] as bool? ?? false,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is NewsModel && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
 }

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:tugasbesar/lib/services/news_service.dart';
 import 'screens/splash.dart';
 
 void main() {
+  // Initialize the NewsService singleton
+  NewsService();
+  
   runApp(const MyApp());
 }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../models/news_model.dart';
-import '../../../widgets/news_card.dart';
+import 'package:tugasbesar/lib/services/news_service.dart';
+import '../../models/news_model.dart';
+
 
 class CrudNewsScreen extends StatefulWidget {
   const CrudNewsScreen({super.key});
@@ -10,19 +11,7 @@ class CrudNewsScreen extends StatefulWidget {
 }
 
 class _CrudNewsScreenState extends State<CrudNewsScreen> {
-  final List<NewsModel> _myNews = [
-    NewsModel(
-      id: '101',
-      title: 'Berita yang Saya Tulis Pertama',
-      summary: 'Ini adalah berita pertama yang saya tulis untuk platform Cobra News...',
-      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
-      imageUrl: '/placeholder.svg?height=200&width=300',
-      category: 'Lokal',
-      publishedAt: DateTime.now().subtract(const Duration(days: 1)),
-      author: 'Saya',
-      isFavorite: false,
-    ),
-  ];
+  final NewsService _newsService = NewsService();
 
   void _showAddNewsDialog() {
     final titleController = TextEditingController();
@@ -33,7 +22,13 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Tambah Berita Baru'),
+        title: const Row(
+          children: [
+            Icon(Icons.add_circle_outline, color: Color(0xFF1E3A8A)),
+            SizedBox(width: 8),
+            Text('Tambah Berita Baru'),
+          ],
+        ),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -43,6 +38,7 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Judul Berita',
                   border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.title),
                 ),
                 maxLines: 2,
               ),
@@ -52,6 +48,7 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Ringkasan',
                   border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.summarize),
                 ),
                 maxLines: 3,
               ),
@@ -61,6 +58,7 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Konten Berita',
                   border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.article),
                 ),
                 maxLines: 5,
               ),
@@ -70,6 +68,7 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Kategori',
                   border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.category),
                 ),
                 items: ['Lokal', 'Internasional'].map((category) {
                   return DropdownMenuItem(
@@ -90,17 +89,47 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
             child: const Text('Batal'),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if (titleController.text.isNotEmpty &&
                   summaryController.text.isNotEmpty &&
                   contentController.text.isNotEmpty) {
-                _addNews(
-                  titleController.text,
-                  summaryController.text,
-                  contentController.text,
-                  selectedCategory,
+                
+                final news = NewsModel(
+                  id: DateTime.now().millisecondsSinceEpoch.toString(),
+                  title: titleController.text,
+                  summary: summaryController.text,
+                  content: contentController.text,
+                  imageUrl: '/placeholder.svg?height=200&width=300',
+                  category: selectedCategory,
+                  publishedAt: DateTime.now(),
+                  author: 'Saya',
+                  isFavorite: false,
                 );
-                Navigator.pop(context);
+
+                try {
+                  await _newsService.createNews(news);
+                  Navigator.pop(context);
+                  
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Row(
+                        children: [
+                          Icon(Icons.check_circle, color: Colors.white),
+                          SizedBox(width: 8),
+                          Text('Berita berhasil ditambahkan secara real-time!'),
+                        ],
+                      ),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Error: ${e.toString()}'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
               }
             },
             style: ElevatedButton.styleFrom(
@@ -114,32 +143,6 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
     );
   }
 
-  void _addNews(String title, String summary, String content, String category) {
-    setState(() {
-      _myNews.insert(
-        0,
-        NewsModel(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
-          title: title,
-          summary: summary,
-          content: content,
-          imageUrl: '/placeholder.svg?height=200&width=300',
-          category: category,
-          publishedAt: DateTime.now(),
-          author: 'Saya',
-          isFavorite: false,
-        ),
-      );
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Berita berhasil ditambahkan!'),
-        backgroundColor: Colors.green,
-      ),
-    );
-  }
-
   void _editNews(NewsModel news) {
     final titleController = TextEditingController(text: news.title);
     final summaryController = TextEditingController(text: news.summary);
@@ -149,7 +152,13 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Edit Berita'),
+        title: const Row(
+          children: [
+            Icon(Icons.edit, color: Color(0xFF1E3A8A)),
+            SizedBox(width: 8),
+            Text('Edit Berita'),
+          ],
+        ),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -159,6 +168,7 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Judul Berita',
                   border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.title),
                 ),
                 maxLines: 2,
               ),
@@ -168,6 +178,7 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Ringkasan',
                   border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.summarize),
                 ),
                 maxLines: 3,
               ),
@@ -177,6 +188,7 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Konten Berita',
                   border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.article),
                 ),
                 maxLines: 5,
               ),
@@ -186,6 +198,7 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
                 decoration: const InputDecoration(
                   labelText: 'Kategori',
                   border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.category),
                 ),
                 items: ['Lokal', 'Internasional'].map((category) {
                   return DropdownMenuItem(
@@ -206,18 +219,42 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
             child: const Text('Batal'),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if (titleController.text.isNotEmpty &&
                   summaryController.text.isNotEmpty &&
                   contentController.text.isNotEmpty) {
-                _updateNews(
-                  news.id,
-                  titleController.text,
-                  summaryController.text,
-                  contentController.text,
-                  selectedCategory,
+                
+                final updatedNews = news.copyWith(
+                  title: titleController.text,
+                  summary: summaryController.text,
+                  content: contentController.text,
+                  category: selectedCategory,
                 );
-                Navigator.pop(context);
+
+                try {
+                  await _newsService.updateNews(updatedNews);
+                  Navigator.pop(context);
+                  
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Row(
+                        children: [
+                          Icon(Icons.update, color: Colors.white),
+                          SizedBox(width: 8),
+                          Text('Berita berhasil diupdate secara real-time!'),
+                        ],
+                      ),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Error: ${e.toString()}'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
               }
             },
             style: ElevatedButton.styleFrom(
@@ -231,50 +268,49 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
     );
   }
 
-  void _updateNews(String id, String title, String summary, String content, String category) {
-    setState(() {
-      final index = _myNews.indexWhere((news) => news.id == id);
-      if (index != -1) {
-        _myNews[index] = _myNews[index].copyWith(
-          title: title,
-          summary: summary,
-          content: content,
-          category: category,
-        );
-      }
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Berita berhasil diupdate!'),
-        backgroundColor: Colors.green,
-      ),
-    );
-  }
-
   void _deleteNews(String id) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Hapus Berita'),
-        content: const Text('Apakah Anda yakin ingin menghapus berita ini?'),
+        title: const Row(
+          children: [
+            Icon(Icons.warning, color: Colors.red),
+            SizedBox(width: 8),
+            Text('Hapus Berita'),
+          ],
+        ),
+        content: const Text('Apakah Anda yakin ingin menghapus berita ini? Perubahan akan tersinkronisasi secara real-time.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text('Batal'),
           ),
           ElevatedButton(
-            onPressed: () {
-              setState(() {
-                _myNews.removeWhere((news) => news.id == id);
-              });
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Berita berhasil dihapus!'),
-                  backgroundColor: Colors.red,
-                ),
-              );
+            onPressed: () async {
+              try {
+                await _newsService.deleteNews(id);
+                Navigator.pop(context);
+                
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Row(
+                      children: [
+                        Icon(Icons.delete, color: Colors.white),
+                        SizedBox(width: 8),
+                        Text('Berita berhasil dihapus secara real-time!'),
+                      ],
+                    ),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Error: ${e.toString()}'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red,
@@ -301,12 +337,58 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
         ),
         backgroundColor: const Color(0xFF1E3A8A),
         elevation: 0,
+        actions: [
+          Container(
+            margin: const EdgeInsets.only(right: 16, top: 8, bottom: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.green.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.green),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 6,
+                  height: 6,
+                  decoration: const BoxDecoration(
+                    color: Colors.green,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                const Text(
+                  'Real-time CRUD',
+                  style: TextStyle(
+                    color: Colors.green,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
-      body: _myNews.isEmpty ? _buildEmptyState() : _buildNewsList(),
-      floatingActionButton: FloatingActionButton(
+      body: AnimatedBuilder(
+        animation: _newsService,
+        builder: (context, child) {
+          final userNews = _newsService.userCreatedNews;
+          
+          if (userNews.isEmpty) {
+            return _buildEmptyState();
+          }
+          
+          return _buildNewsList(userNews);
+        },
+      ),
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: _showAddNewsDialog,
         backgroundColor: const Color(0xFF1E3A8A),
-        child: const Icon(Icons.add, color: Colors.white),
+        foregroundColor: Colors.white,
+        icon: const Icon(Icons.add),
+        label: const Text('Tambah Berita'),
       ),
     );
   }
@@ -332,7 +414,8 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Mulai tulis berita pertama Anda',
+            'Mulai tulis berita pertama Anda\nPerubahan akan tersinkronisasi secara real-time',
+            textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
               color: Colors.grey.shade500,
@@ -343,7 +426,7 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
     );
   }
 
-  Widget _buildNewsList() {
+  Widget _buildNewsList(List userNews) {
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
@@ -358,11 +441,41 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  '${_myNews.length} Berita Saya',
+                  '${userNews.length} Berita Saya',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF1E3A8A),
+                  ),
+                ),
+                const Spacer(),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.shade100,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.sync,
+                        size: 14,
+                        color: Colors.blue.shade700,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Auto-sync',
+                        style: TextStyle(
+                          color: Colors.blue.shade700,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -372,7 +485,7 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
         SliverList(
           delegate: SliverChildBuilderDelegate(
             (context, index) {
-              final news = _myNews[index];
+              final news = userNews[index];
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: Card(
@@ -404,6 +517,36 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
                                       ? Colors.green.shade700
                                       : Colors.blue.shade700,
                                 ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.orange.shade100,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.flash_on,
+                                    size: 12,
+                                    color: Colors.orange.shade700,
+                                  ),
+                                  const SizedBox(width: 2),
+                                  Text(
+                                    'LIVE',
+                                    style: TextStyle(
+                                      color: Colors.orange.shade700,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                             const Spacer(),
@@ -476,6 +619,39 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
                                 color: Colors.grey.shade500,
                               ),
                             ),
+                            const Spacer(),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.green.shade50,
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: Colors.green.shade200,
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.sync_alt,
+                                    size: 12,
+                                    color: Colors.green.shade600,
+                                  ),
+                                  const SizedBox(width: 2),
+                                  Text(
+                                    'Synced',
+                                    style: TextStyle(
+                                      color: Colors.green.shade600,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       ],
@@ -484,7 +660,7 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
                 ),
               );
             },
-            childCount: _myNews.length,
+            childCount: userNews.length,
           ),
         ),
         const SliverToBoxAdapter(

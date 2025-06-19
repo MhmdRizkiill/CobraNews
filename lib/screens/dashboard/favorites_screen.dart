@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tugasbesar/widgets/news_card.dart';
-import '../../../models/news_model.dart';
+import 'package:tugasbesar/lib/services/news_service.dart';
+import '../../widgets/real_time_news_card.dart';
 
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
@@ -10,44 +10,7 @@ class FavoritesScreen extends StatefulWidget {
 }
 
 class _FavoritesScreenState extends State<FavoritesScreen> {
-  // Sample favorite news data
-  final List<NewsModel> _favoriteNews = [
-    NewsModel(
-      id: '2',
-      title: 'Pemerintah Indonesia Luncurkan Program Digitalisasi UMKM',
-      summary: 'Program ini bertujuan untuk meningkatkan daya saing UMKM di era digital...',
-      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
-      imageUrl: '/placeholder.svg?height=200&width=300',
-      category: 'Lokal',
-      publishedAt: DateTime.now().subtract(const Duration(hours: 4)),
-      author: 'Siti Nurhaliza',
-      isFavorite: true,
-    ),
-    NewsModel(
-      id: '4',
-      title: 'Festival Budaya Nusantara Digelar di Jakarta',
-      summary: 'Acara ini menampilkan keberagaman budaya dari 34 provinsi di Indonesia...',
-      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
-      imageUrl: '/placeholder.svg?height=200&width=300',
-      category: 'Lokal',
-      publishedAt: DateTime.now().subtract(const Duration(hours: 8)),
-      author: 'Maya Sari',
-      isFavorite: true,
-    ),
-  ];
-
-  void _toggleFavorite(String newsId) {
-    setState(() {
-      _favoriteNews.removeWhere((news) => news.id == newsId);
-    });
-    
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Berita dihapus dari favorit'),
-        duration: Duration(seconds: 2),
-      ),
-    );
-  }
+  final NewsService _newsService = NewsService();
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +35,18 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           ),
         ],
       ),
-      body: _favoriteNews.isEmpty
-          ? _buildEmptyState()
-          : _buildFavoritesList(),
+      body: AnimatedBuilder(
+        animation: _newsService,
+        builder: (context, child) {
+          final favoriteNews = _newsService.favoriteNews;
+
+          if (favoriteNews.isEmpty) {
+            return _buildEmptyState();
+          }
+
+          return _buildFavoritesList(favoriteNews);
+        },
+      ),
     );
   }
 
@@ -99,25 +71,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Tambahkan berita ke favorit untuk\nmembacanya nanti',
+            'Tambahkan berita ke favorit untuk membacanya nanti',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
               color: Colors.grey.shade500,
-            ),
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton.icon(
-            onPressed: () {
-              // Navigate to home tab
-              DefaultTabController.of(context)?.animateTo(0);
-            },
-            icon: const Icon(Icons.explore),
-            label: const Text('Jelajahi Berita'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF1E3A8A),
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             ),
           ),
         ],
@@ -125,7 +83,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     );
   }
 
-  Widget _buildFavoritesList() {
+  Widget _buildFavoritesList(List favoriteNews) {
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
@@ -140,11 +98,44 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  '${_favoriteNews.length} Berita Disimpan',
+                  '${favoriteNews.length} Berita Disimpan',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF1E3A8A),
+                  ),
+                ),
+                const Spacer(),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.green.shade100,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 6,
+                        height: 6,
+                        decoration: BoxDecoration(
+                          color: Colors.green.shade600,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Real-time sync',
+                        style: TextStyle(
+                          color: Colors.green.shade700,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -154,16 +145,14 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         SliverList(
           delegate: SliverChildBuilderDelegate(
             (context, index) {
-              final news = _favoriteNews[index];
+              final news = favoriteNews[index];
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: NewsCard(
-                  news: news,
-                  onFavoriteToggle: _toggleFavorite,
-                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: RealTimeNewsCard(news: news),
               );
             },
-            childCount: _favoriteNews.length,
+            childCount: favoriteNews.length,
           ),
         ),
         const SliverToBoxAdapter(

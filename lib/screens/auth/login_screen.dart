@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tugasbesar/main.dart';
 import 'register_screen.dart';
+import '../dashboard/main_dashboard.dart';
 import '../../utils/logo_widget.dart';
 import '../../utils/validators.dart';
 
@@ -16,7 +16,7 @@ class _LoginScreenState extends State<LoginScreen>
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-
+  
   bool _isLoading = false;
   bool _obscurePassword = true;
   late AnimationController _animationController;
@@ -73,12 +73,12 @@ class _LoginScreenState extends State<LoginScreen>
         _isLoading = false;
       });
 
-      // Navigasi ke main app
+      // Navigasi ke main dashboard
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) =>
-              const MainNewsApp(),
+              const MainDashboard(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(
               opacity: animation,
@@ -324,8 +324,7 @@ class _LoginScreenState extends State<LoginScreen>
                                         height: 24,
                                         child: CircularProgressIndicator(
                                           strokeWidth: 2,
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
+                                          valueColor: AlwaysStoppedAnimation<Color>(
                                             Colors.white,
                                           ),
                                         ),
@@ -361,8 +360,7 @@ class _LoginScreenState extends State<LoginScreen>
                                             color: Color(0xFF3B82F6),
                                             fontSize: 14,
                                             fontWeight: FontWeight.w600,
-                                            decoration:
-                                                TextDecoration.underline,
+                                            decoration: TextDecoration.underline,
                                           ),
                                         ),
                                       ),

@@ -1,4 +1,6 @@
 class Validators {
+  static var validateUser;
+
   static String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
       return 'Email tidak boleh kosong';

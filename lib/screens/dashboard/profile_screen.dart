@@ -1,8 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:tugasbesar/screens/auth/login_screen.dart';
+import 'package:tugasbesar/models/user_models.dart';
+import '../auth/login_screen.dart';
+import 'edit_profile_screen.dart';
+import 'about_app_screen.dart';
+import '../../services/user_service.dart';
+import 'dart:io';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  late UserModel currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    currentUser = UserService.getCurrentUser();
+  }
+
+  void _refreshProfile() {
+    setState(() {
+      currentUser = UserService.getCurrentUser();
+    });
+  }
 
   void _logout(BuildContext context) {
     showDialog(
@@ -67,32 +91,68 @@ class ProfileScreen extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 30),
                 child: Column(
                   children: [
-                    const CircleAvatar(
-                      radius: 50,
-                      backgroundColor: Colors.white,
-                      child: Icon(
-                        Icons.person,
-                        size: 60,
-                        color: Color(0xFF1E3A8A),
-                      ),
+                    // Profile Image
+                    Stack(
+                      children: [
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundColor: Colors.white,
+                          backgroundImage: currentUser.profileImagePath != null
+                              ? FileImage(File(currentUser.profileImagePath!))
+                              : null,
+                          child: currentUser.profileImagePath == null
+                              ? const Icon(
+                                  Icons.person,
+                                  size: 60,
+                                  color: Color(0xFF1E3A8A),
+                                )
+                              : null,
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.verified,
+                              color: Color(0xFF1E3A8A),
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 16),
-                    const Text(
-                      'John Doe',
-                      style: TextStyle(
+                    Text(
+                      currentUser.name,
+                      style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
                     const SizedBox(height: 4),
-                    const Text(
-                      'john.doe@email.com',
-                      style: TextStyle(
+                    Text(
+                      currentUser.email,
+                      style: const TextStyle(
                         fontSize: 16,
                         color: Colors.white70,
                       ),
                     ),
+                    if (currentUser.phone != null) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        currentUser.phone!,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.white60,
+                        ),
+                      ),
+                    ],
                     const SizedBox(height: 16),
                     Container(
                       padding: const EdgeInsets.symmetric(
@@ -103,9 +163,9 @@ class ProfileScreen extends StatelessWidget {
                         color: Colors.white.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: const Text(
-                        'Member sejak 2024',
-                        style: TextStyle(
+                      child: Text(
+                        'Member sejak ${_formatJoinDate(currentUser.joinDate)}',
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
@@ -119,62 +179,62 @@ class ProfileScreen extends StatelessWidget {
 
             const SizedBox(height: 30),
 
+            // Profile Stats
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _buildStatCard(
+                      icon: Icons.article_outlined,
+                      title: 'Artikel Dibaca',
+                      value: '127',
+                      color: Colors.blue,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _buildStatCard(
+                      icon: Icons.favorite_outline,
+                      title: 'Favorit',
+                      value: '23',
+                      color: Colors.red,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _buildStatCard(
+                      icon: Icons.share_outlined,
+                      title: 'Dibagikan',
+                      value: '45',
+                      color: Colors.green,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 30),
+
             // Profile Menu
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
                   _buildMenuCard(
-                    icon: Icons.person_outline,
+                    icon: Icons.edit_outlined,
                     title: 'Edit Profile',
                     subtitle: 'Ubah informasi personal Anda',
-                    onTap: () {
-                      // TODO: Navigate to edit profile
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  _buildMenuCard(
-                    icon: Icons.notifications_outlined,
-                    title: 'Notifikasi',
-                    subtitle: 'Atur preferensi notifikasi',
-                    onTap: () {
-                      // TODO: Navigate to notification settings
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  _buildMenuCard(
-                    icon: Icons.security_outlined,
-                    title: 'Keamanan',
-                    subtitle: 'Ubah password dan keamanan akun',
-                    onTap: () {
-                      // TODO: Navigate to security settings
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  _buildMenuCard(
-                    icon: Icons.language_outlined,
-                    title: 'Bahasa',
-                    subtitle: 'Pilih bahasa aplikasi',
-                    onTap: () {
-                      // TODO: Navigate to language settings
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  _buildMenuCard(
-                    icon: Icons.dark_mode_outlined,
-                    title: 'Tema',
-                    subtitle: 'Pilih tema terang atau gelap',
-                    onTap: () {
-                      // TODO: Navigate to theme settings
-                    },
-                  ),
-                  const SizedBox(height: 12),
-                  _buildMenuCard(
-                    icon: Icons.help_outline,
-                    title: 'Bantuan',
-                    subtitle: 'FAQ dan dukungan pelanggan',
-                    onTap: () {
-                      // TODO: Navigate to help
+                    onTap: () async {
+                      final result = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const EditProfileScreen(),
+                        ),
+                      );
+                      if (result == true) {
+                        _refreshProfile();
+                      }
                     },
                   ),
                   const SizedBox(height: 12),
@@ -183,7 +243,12 @@ class ProfileScreen extends StatelessWidget {
                     title: 'Tentang Aplikasi',
                     subtitle: 'Versi dan informasi aplikasi',
                     onTap: () {
-                      // TODO: Show about dialog
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AboutAppScreen(),
+                        ),
+                      );
                     },
                   ),
                   const SizedBox(height: 30),
@@ -200,6 +265,56 @@ class ProfileScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildStatCard({
+    required IconData icon,
+    required String title,
+    required String value,
+    required Color color,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Icon(
+            icon,
+            color: color,
+            size: 24,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey.shade600,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
@@ -258,5 +373,13 @@ class ProfileScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _formatJoinDate(DateTime date) {
+    final months = [
+      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+    return '${months[date.month - 1]} ${date.year}';
   }
 }

@@ -13,13 +13,16 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
-    with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   final NewsService _newsService = NewsService();
   String _selectedCategory = 'Semua';
   late AnimationController _refreshController;
 
-  final List<String> _categories = ['Semua', 'Internasional', 'Lokal'];
+  final List<String> _categories = [
+    'Semua',
+    'Internasional',
+    'Lokal'
+  ];
 
   @override
   void initState() {
@@ -71,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen>
                         child: Padding(
                           padding: const EdgeInsets.all(4),
                           child: Image.asset(
-                            'assets/images/cobra_news_logo.jpg',
+                            'assets/images/logoi.png',
                             fit: BoxFit.contain,
                             errorBuilder: (context, error, stackTrace) {
                               return const Icon(
@@ -128,8 +131,7 @@ class _HomeScreenState extends State<HomeScreen>
                   },
                 ),
                 IconButton(
-                  icon: const Icon(Icons.notifications_outlined,
-                      color: Colors.white),
+                  icon: const Icon(Icons.notifications_outlined, color: Colors.white),
                   onPressed: () {
                     // TODO: Implement notifications
                   },
@@ -182,8 +184,7 @@ class _HomeScreenState extends State<HomeScreen>
               child: AnimatedBuilder(
                 animation: _newsService,
                 builder: (context, child) {
-                  final filteredNews =
-                      _newsService.getNewsByCategory(_selectedCategory);
+                  final filteredNews = _newsService.getNewsByCategory(_selectedCategory);
 
                   if (filteredNews.isEmpty) {
                     return Container(
@@ -204,14 +205,6 @@ class _HomeScreenState extends State<HomeScreen>
                                 fontSize: 18,
                                 color: Colors.grey.shade600,
                                 fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Berita akan muncul secara real-time',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey.shade500,
                               ),
                             ),
                           ],
@@ -322,8 +315,7 @@ class _HomeScreenState extends State<HomeScreen>
                       // News List
                       ...filteredNews.skip(1).map((news) {
                         return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                           child: RealTimeNewsCard(news: news),
                         );
                       }).toList(),

@@ -43,14 +43,14 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
         final images = await _imageService.pickMultipleImagesFromGallery();
         final remainingSlots = widget.maxImages - _selectedImages.length;
         final imagesToAdd = images.take(remainingSlots).toList();
-        
+
         for (final image in imagesToAdd) {
           _selectedImages.add(image.path);
         }
-        
+
         widget.onImagesChanged(_selectedImages);
         setState(() {});
-        
+
         if (images.length > remainingSlots) {
           _showMessage('Hanya ${remainingSlots} gambar yang dapat ditambahkan (maksimal ${widget.maxImages} gambar)');
         }
@@ -60,7 +60,9 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
           if (widget.allowMultiple) {
             _selectedImages.add(image.path);
           } else {
-            _selectedImages = [image.path];
+            _selectedImages = [
+              image.path
+            ];
           }
           widget.onImagesChanged(_selectedImages);
           setState(() {});
@@ -68,37 +70,6 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
       }
     } catch (e) {
       _showMessage('Error memilih gambar: ${e.toString()}');
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  Future<void> _pickImageFromCamera() async {
-    if (_isLoading) return;
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      if (_selectedImages.length < widget.maxImages) {
-        final image = await _imageService.pickImageFromCamera();
-        if (image != null) {
-          if (widget.allowMultiple) {
-            _selectedImages.add(image.path);
-          } else {
-            _selectedImages = [image.path];
-          }
-          widget.onImagesChanged(_selectedImages);
-          setState(() {});
-        }
-      } else {
-        _showMessage('Maksimal ${widget.maxImages} gambar dapat ditambahkan');
-      }
-    } catch (e) {
-      _showMessage('Error mengambil foto: ${e.toString()}');
     } finally {
       setState(() {
         _isLoading = false;
@@ -150,17 +121,6 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                     onTap: () {
                       Navigator.pop(context);
                       _pickImageFromGallery();
-                    },
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: _buildPickerOption(
-                    icon: Icons.camera_alt,
-                    label: 'Kamera',
-                    onTap: () {
-                      Navigator.pop(context);
-                      _pickImageFromCamera();
                     },
                   ),
                 ),
@@ -245,7 +205,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
           ],
         ),
         const SizedBox(height: 12),
-        
+
         // Image Grid
         if (_selectedImages.isNotEmpty)
           Container(
@@ -258,14 +218,14 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                   // Add button
                   return _buildAddImageButton();
                 }
-                
+
                 return _buildImageItem(_selectedImages[index], index);
               },
             ),
           )
         else
           _buildEmptyState(),
-        
+
         if (_isLoading)
           const Padding(
             padding: EdgeInsets.only(top: 16),

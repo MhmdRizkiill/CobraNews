@@ -30,7 +30,6 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           IconButton(
             icon: const Icon(Icons.search, color: Colors.white),
             onPressed: () {
-              // TODO: Implement search in favorites
             },
           ),
         ],

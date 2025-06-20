@@ -1,7 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:tugasbesar/lib/services/news_service.dart';
-import '../../models/news_model.dart';
+import 'dart:io';
 
+import 'package:flutter/material.dart';
+import '../../models/news_model.dart';
+import '../../services/news_service.dart';
+import '../../services/image_service.dart';
+import '../../widgets/image_picker_widget.dart';
 
 class CrudNewsScreen extends StatefulWidget {
   const CrudNewsScreen({super.key});
@@ -18,127 +21,223 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
     final summaryController = TextEditingController();
     final contentController = TextEditingController();
     String selectedCategory = 'Lokal';
+    List<String> selectedImages = [];
 
     showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Row(
-          children: [
-            Icon(Icons.add_circle_outline, color: Color(0xFF1E3A8A)),
-            SizedBox(width: 8),
-            Text('Tambah Berita Baru'),
-          ],
-        ),
-        content: SingleChildScrollView(
+      context: context, 
+      useRootNavigator: true,
+      builder: (context) => Dialog(
+        insetPadding: const EdgeInsets.all(16),
+        child: Container(
+          width: double.maxFinite,
+          height: MediaQuery.of(context).size.height * 0.9,
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(
-                controller: titleController,
-                decoration: const InputDecoration(
-                  labelText: 'Judul Berita',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.title),
+              // Header
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E3A8A),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    topRight: Radius.circular(12),
+                  ),
                 ),
-                maxLines: 2,
+                child: Row(
+                  children: [
+                    const Icon(Icons.add_circle_outline, color: Colors.white),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Tambah Berita Baru',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(Icons.close, color: Colors.white),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: summaryController,
-                decoration: const InputDecoration(
-                  labelText: 'Ringkasan',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.summarize),
+
+              // Content
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Image Picker
+                      ImagePickerWidget(
+                        onImagesChanged: (images) {
+                          selectedImages = images;
+                        },
+                        maxImages: 5,
+                        allowMultiple: true,
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      TextField(
+                        controller: titleController,
+                        decoration: const InputDecoration(
+                          labelText: 'Judul Berita',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.title),
+                        ),
+                        maxLines: 2,
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: summaryController,
+                        decoration: const InputDecoration(
+                          labelText: 'Ringkasan',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.summarize),
+                        ),
+                        maxLines: 3,
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: contentController,
+                        decoration: const InputDecoration(
+                          labelText: 'Konten Berita',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.article),
+                        ),
+                        maxLines: 5,
+                      ),
+                      const SizedBox(height: 16),
+                      DropdownButtonFormField<String>(
+                        value: selectedCategory,
+                        decoration: const InputDecoration(
+                          labelText: 'Kategori',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.category),
+                        ),
+                        items: ['Lokal', 'Internasional'].map((category) {
+                          return DropdownMenuItem(
+                            value: category,
+                            child: Text(category),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          selectedCategory = value!;
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-                maxLines: 3,
               ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: contentController,
-                decoration: const InputDecoration(
-                  labelText: 'Konten Berita',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.article),
+
+              // Actions
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade50,
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(12),
+                    bottomRight: Radius.circular(12),
+                  ),
                 ),
-                maxLines: 5,
-              ),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                value: selectedCategory,
-                decoration: const InputDecoration(
-                  labelText: 'Kategori',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.category),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Batal'),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          if (titleController.text.isNotEmpty &&
+                              summaryController.text.isNotEmpty &&
+                              contentController.text.isNotEmpty) {
+
+                            final newsId = DateTime.now().millisecondsSinceEpoch.toString();
+
+                            // Save images to app directory
+                            List<String> savedImagePaths = [];
+                            if (selectedImages.isNotEmpty) {
+                              try {
+                                final imageService = ImageService();
+                                final tempFiles = selectedImages.map((path) => File(path)).toList();
+                                savedImagePaths = await imageService.saveMultipleImagesToAppDirectory(tempFiles, newsId);
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Error menyimpan gambar: ${e.toString()}'),
+                                    backgroundColor: Colors.orange,
+                                  ),
+                                );
+                              }
+                            }
+
+                            final news = NewsModel(
+                              id: newsId,
+                              title: titleController.text,
+                              summary: summaryController.text,
+                              content: contentController.text,
+                              imageUrl: savedImagePaths.isNotEmpty ? savedImagePaths.first : '/placeholder.svg?height=200&width=300',
+                              additionalImages: savedImagePaths,
+                              category: selectedCategory,
+                              publishedAt: DateTime.now(),
+                              author: 'Saya',
+                              isFavorite: false,
+                            );
+
+                            try {
+                              await _newsService.createNews(news);
+                              Navigator.pop(context);
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Row(
+                                    children: [
+                                      const Icon(Icons.check_circle, color: Colors.white),
+                                      const SizedBox(width: 8),
+                                      Text('Berita berhasil ditambahkan${savedImagePaths.isNotEmpty ? ' dengan ${savedImagePaths.length} gambar' : ''}!'),
+                                    ],
+                                  ),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Error: ${e.toString()}'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Mohon lengkapi semua field yang diperlukan'),
+                                backgroundColor: Colors.orange,
+                              ),
+                            );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF1E3A8A),
+                          foregroundColor: Colors.white,
+                        ),
+                        child: const Text('Simpan'),
+                      ),
+                    ),
+                  ],
                 ),
-                items: ['Lokal', 'Internasional'].map((category) {
-                  return DropdownMenuItem(
-                    value: category,
-                    child: Text(category),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  selectedCategory = value!;
-                },
               ),
             ],
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Batal'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              if (titleController.text.isNotEmpty &&
-                  summaryController.text.isNotEmpty &&
-                  contentController.text.isNotEmpty) {
-                
-                final news = NewsModel(
-                  id: DateTime.now().millisecondsSinceEpoch.toString(),
-                  title: titleController.text,
-                  summary: summaryController.text,
-                  content: contentController.text,
-                  imageUrl: '/placeholder.svg?height=200&width=300',
-                  category: selectedCategory,
-                  publishedAt: DateTime.now(),
-                  author: 'Saya',
-                  isFavorite: false,
-                );
-
-                try {
-                  await _newsService.createNews(news);
-                  Navigator.pop(context);
-                  
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Row(
-                        children: [
-                          Icon(Icons.check_circle, color: Colors.white),
-                          SizedBox(width: 8),
-                          Text('Berita berhasil ditambahkan secara real-time!'),
-                        ],
-                      ),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Error: ${e.toString()}'),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                }
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF1E3A8A),
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Simpan'),
-          ),
-        ],
       ),
     );
   }
@@ -148,127 +247,238 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
     final summaryController = TextEditingController(text: news.summary);
     final contentController = TextEditingController(text: news.content);
     String selectedCategory = news.category;
+    List<String> selectedImages = List.from(news.additionalImages);
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Row(
-          children: [
-            Icon(Icons.edit, color: Color(0xFF1E3A8A)),
-            SizedBox(width: 8),
-            Text('Edit Berita'),
-          ],
-        ),
-        content: SingleChildScrollView(
+      useRootNavigator: true,
+      builder: (context) => Dialog(
+        insetPadding: const EdgeInsets.all(16),
+        child: Container(
+          width: double.maxFinite,
+          height: MediaQuery.of(context).size.height * 0.9,
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(
-                controller: titleController,
-                decoration: const InputDecoration(
-                  labelText: 'Judul Berita',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.title),
+              // Header
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E3A8A),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    topRight: Radius.circular(12),
+                  ),
                 ),
-                maxLines: 2,
+                child: Row(
+                  children: [
+                    const Icon(Icons.edit, color: Colors.white),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Edit Berita',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(Icons.close, color: Colors.white),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: summaryController,
-                decoration: const InputDecoration(
-                  labelText: 'Ringkasan',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.summarize),
+
+              // Content
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Image Picker
+                      ImagePickerWidget(
+                        initialImages: selectedImages,
+                        onImagesChanged: (images) {
+                          selectedImages = images;
+                        },
+                        maxImages: 5,
+                        allowMultiple: true,
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      TextField(
+                        controller: titleController,
+                        decoration: const InputDecoration(
+                          labelText: 'Judul Berita',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.title),
+                        ),
+                        maxLines: 2,
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: summaryController,
+                        decoration: const InputDecoration(
+                          labelText: 'Ringkasan',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.summarize),
+                        ),
+                        maxLines: 3,
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: contentController,
+                        decoration: const InputDecoration(
+                          labelText: 'Konten Berita',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.article),
+                        ),
+                        maxLines: 5,
+                      ),
+                      const SizedBox(height: 16),
+                      DropdownButtonFormField<String>(
+                        value: selectedCategory,
+                        decoration: const InputDecoration(
+                          labelText: 'Kategori',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.category),
+                        ),
+                        items: ['Lokal', 'Internasional'].map((category) {
+                          return DropdownMenuItem(
+                            value: category,
+                            child: Text(category),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          selectedCategory = value!;
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-                maxLines: 3,
               ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: contentController,
-                decoration: const InputDecoration(
-                  labelText: 'Konten Berita',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.article),
+
+              // Actions
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade50,
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(12),
+                    bottomRight: Radius.circular(12),
+                  ),
                 ),
-                maxLines: 5,
-              ),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                value: selectedCategory,
-                decoration: const InputDecoration(
-                  labelText: 'Kategori',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.category),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Batal'),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          if (titleController.text.isNotEmpty &&
+                              summaryController.text.isNotEmpty &&
+                              contentController.text.isNotEmpty) {
+
+                            // Handle image updates
+                            List<String> finalImagePaths = [];
+
+                            // Process new images (those that are not saved yet)
+                            final newImages = selectedImages.where((path) => !path.contains('news_images')).toList();
+                            if (newImages.isNotEmpty) {
+                              try {
+                                final imageService = ImageService();
+                                final tempFiles = newImages.map((path) => File(path)).toList();
+                                final savedPaths = await imageService.saveMultipleImagesToAppDirectory(tempFiles, news.id);
+                                finalImagePaths.addAll(savedPaths);
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Error menyimpan gambar baru: ${e.toString()}'),
+                                    backgroundColor: Colors.orange,
+                                  ),
+                                );
+                              }
+                            }
+
+                            // Keep existing images that are still selected
+                            final existingImages = selectedImages.where((path) => path.contains('news_images')).toList();
+                            finalImagePaths.addAll(existingImages);
+
+                            // Delete removed images
+                            final removedImages = news.additionalImages.where((path) => !selectedImages.contains(path)).toList();
+                            if (removedImages.isNotEmpty) {
+                              final imageService = ImageService();
+                              await imageService.deleteMultipleImages(removedImages);
+                            }
+
+                            final updatedNews = news.copyWith(
+                              title: titleController.text,
+                              summary: summaryController.text,
+                              content: contentController.text,
+                              category: selectedCategory,
+                              imageUrl: finalImagePaths.isNotEmpty ? finalImagePaths.first : news.imageUrl,
+                              additionalImages: finalImagePaths,
+                            );
+
+                            try {
+                              await _newsService.updateNews(updatedNews);
+                              Navigator.pop(context);
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Row(
+                                    children: [
+                                      const Icon(Icons.update, color: Colors.white),
+                                      const SizedBox(width: 8),
+                                      Text('Berita berhasil diupdate${finalImagePaths.isNotEmpty ? ' dengan ${finalImagePaths.length} gambar' : ''}!'),
+                                    ],
+                                  ),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Error: ${e.toString()}'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Mohon lengkapi semua field yang diperlukan'),
+                                backgroundColor: Colors.orange,
+                              ),
+                            );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF1E3A8A),
+                          foregroundColor: Colors.white,
+                        ),
+                        child: const Text('Update'),
+                      ),
+                    ),
+                  ],
                 ),
-                items: ['Lokal', 'Internasional'].map((category) {
-                  return DropdownMenuItem(
-                    value: category,
-                    child: Text(category),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  selectedCategory = value!;
-                },
               ),
             ],
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Batal'),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              if (titleController.text.isNotEmpty &&
-                  summaryController.text.isNotEmpty &&
-                  contentController.text.isNotEmpty) {
-                
-                final updatedNews = news.copyWith(
-                  title: titleController.text,
-                  summary: summaryController.text,
-                  content: contentController.text,
-                  category: selectedCategory,
-                );
-
-                try {
-                  await _newsService.updateNews(updatedNews);
-                  Navigator.pop(context);
-                  
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Row(
-                        children: [
-                          Icon(Icons.update, color: Colors.white),
-                          SizedBox(width: 8),
-                          Text('Berita berhasil diupdate secara real-time!'),
-                        ],
-                      ),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Error: ${e.toString()}'),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                }
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF1E3A8A),
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Update'),
-          ),
-        ],
       ),
     );
   }
 
-  void _deleteNews(String id) {
+  Future<void> _deleteNews(String newsId) async {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -279,7 +489,7 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
             Text('Hapus Berita'),
           ],
         ),
-        content: const Text('Apakah Anda yakin ingin menghapus berita ini? Perubahan akan tersinkronisasi secara real-time.'),
+        content: const Text('Apakah Anda yakin ingin menghapus berita ini? Semua gambar yang terkait juga akan dihapus.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -288,16 +498,25 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
           ElevatedButton(
             onPressed: () async {
               try {
-                await _newsService.deleteNews(id);
+                // Find the news to get its images
+                final newsToDelete = _newsService.allNews.firstWhere((news) => news.id == newsId);
+
+                // Delete associated images
+                if (newsToDelete.additionalImages.isNotEmpty) {
+                  final imageService = ImageService();
+                  await imageService.deleteMultipleImages(newsToDelete.additionalImages);
+                }
+
+                await _newsService.deleteNews(newsId);
                 Navigator.pop(context);
-                
+
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Row(
                       children: [
                         Icon(Icons.delete, color: Colors.white),
                         SizedBox(width: 8),
-                        Text('Berita berhasil dihapus secara real-time!'),
+                        Text('Berita dan gambar berhasil dihapus!'),
                       ],
                     ),
                     backgroundColor: Colors.red,
@@ -375,11 +594,11 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
         animation: _newsService,
         builder: (context, child) {
           final userNews = _newsService.userCreatedNews;
-          
+
           if (userNews.isEmpty) {
             return _buildEmptyState();
           }
-          
+
           return _buildNewsList(userNews);
         },
       ),

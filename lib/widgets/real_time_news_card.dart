@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tugasbesar/lib/services/news_service.dart';
 import '../models/news_model.dart';
-
+import '../services/news_service.dart';
+import '../widgets/news_image_widget.dart';
+import '../widgets/share_bottom_sheet.dart';
+import '../screens/news/news_detail_screen.dart';
 
 class RealTimeNewsCard extends StatefulWidget {
   final NewsModel news;
@@ -95,6 +97,46 @@ class _RealTimeNewsCardState extends State<RealTimeNewsCard>
     }
   }
 
+  void _navigateToDetail() {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            NewsDetailScreen(news: widget.news),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(
+            opacity: animation,
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(0.0, 0.1),
+                end: Offset.zero,
+              ).animate(CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeOutCubic,
+              )),
+              child: child,
+            ),
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 400),
+      ),
+    );
+  }
+
+  void _shareNews() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: ShareBottomSheet(news: widget.news),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -109,7 +151,7 @@ class _RealTimeNewsCardState extends State<RealTimeNewsCard>
               borderRadius: BorderRadius.circular(12),
             ),
             child: InkWell(
-              onTap: widget.onTap,
+              onTap: widget.onTap ?? _navigateToDetail,
               borderRadius: BorderRadius.circular(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,24 +165,13 @@ class _RealTimeNewsCardState extends State<RealTimeNewsCard>
                     child: Container(
                       height: widget.isLarge ? 200 : 150,
                       width: double.infinity,
-                      color: Colors.grey.shade200,
                       child: Stack(
                         children: [
-                          Image.network(
-                            widget.news.imageUrl,
-                            fit: BoxFit.cover,
+                          NewsImageWidget(
+                            imageUrl: widget.news.imageUrl,
                             width: double.infinity,
                             height: double.infinity,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                color: Colors.grey.shade200,
-                                child: Icon(
-                                  Icons.image,
-                                  size: 50,
-                                  color: Colors.grey.shade400,
-                                ),
-                              );
-                            },
+                            fit: BoxFit.cover,
                           ),
                           // Real-time indicator
                           Positioned(
@@ -216,6 +247,16 @@ class _RealTimeNewsCardState extends State<RealTimeNewsCard>
                               ),
                             ),
                             const Spacer(),
+                            // Share button
+                            IconButton(
+                              onPressed: _shareNews,
+                              icon: Icon(
+                                Icons.share,
+                                color: Colors.grey.shade600,
+                                size: 20,
+                              ),
+                            ),
+                            // Favorite button
                             Stack(
                               children: [
                                 IconButton(
@@ -313,6 +354,12 @@ class _RealTimeNewsCardState extends State<RealTimeNewsCard>
                                 fontSize: 12,
                                 color: Colors.grey.shade500,
                               ),
+                            ),
+                            const Spacer(),
+                            Icon(
+                              Icons.arrow_forward_ios,
+                              size: 12,
+                              color: Colors.grey.shade400,
                             ),
                           ],
                         ),

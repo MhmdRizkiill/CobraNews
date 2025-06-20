@@ -3,7 +3,8 @@ class NewsModel {
   final String title;
   final String summary;
   final String content;
-  final String imageUrl;
+  final String imageUrl; // Main image URL (for backward compatibility)
+  final List<String> additionalImages; // Additional local images
   final String category;
   final DateTime publishedAt;
   final String author;
@@ -15,11 +16,32 @@ class NewsModel {
     required this.summary,
     required this.content,
     required this.imageUrl,
+    this.additionalImages = const [],
     required this.category,
     required this.publishedAt,
     required this.author,
     required this.isFavorite,
   });
+
+  // Get all images (main + additional)
+  List<String> get allImages {
+    final images = <String>[imageUrl];
+    images.addAll(additionalImages);
+    return images.where((img) => img.isNotEmpty).toList();
+  }
+
+  // Check if has local images
+  bool get hasLocalImages {
+    return additionalImages.isNotEmpty;
+  }
+
+  // Get primary display image
+  String get primaryImage {
+    if (additionalImages.isNotEmpty) {
+      return additionalImages.first;
+    }
+    return imageUrl;
+  }
 
   NewsModel copyWith({
     String? id,
@@ -27,6 +49,7 @@ class NewsModel {
     String? summary,
     String? content,
     String? imageUrl,
+    List<String>? additionalImages,
     String? category,
     DateTime? publishedAt,
     String? author,
@@ -38,6 +61,7 @@ class NewsModel {
       summary: summary ?? this.summary,
       content: content ?? this.content,
       imageUrl: imageUrl ?? this.imageUrl,
+      additionalImages: additionalImages ?? this.additionalImages,
       category: category ?? this.category,
       publishedAt: publishedAt ?? this.publishedAt,
       author: author ?? this.author,
@@ -52,6 +76,7 @@ class NewsModel {
       'summary': summary,
       'content': content,
       'imageUrl': imageUrl,
+      'additionalImages': additionalImages,
       'category': category,
       'publishedAt': publishedAt.toIso8601String(),
       'author': author,
@@ -66,6 +91,7 @@ class NewsModel {
       summary: json['summary'] as String,
       content: json['content'] as String,
       imageUrl: json['imageUrl'] as String,
+      additionalImages: List<String>.from(json['additionalImages'] ?? []),
       category: json['category'] as String,
       publishedAt: DateTime.parse(json['publishedAt'] as String),
       author: json['author'] as String,

@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:tugasbesar/models/news_model.dart';
+import '../models/news_model.dart';
 import 'websocket_service.dart';
+import 'image_service.dart';
 
 class NewsService extends ChangeNotifier {
   static final NewsService _instance = NewsService._internal();
@@ -17,9 +18,19 @@ class NewsService extends ChangeNotifier {
     NewsModel(
       id: '1',
       title: 'Pemilu Presiden Amerika Serikat 2024 Memasuki Tahap Akhir',
-      summary: 'Kandidat dari kedua partai besar melakukan kampanye intensif menjelang hari pemungutan suara...',
-      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
-      imageUrl: '/placeholder.svg?height=200&width=300',
+      summary: 'Kandidat dari kedua partai besar melakukan kampanye intensif menjelang hari pemungutan suara dengan berbagai strategi untuk menarik perhatian pemilih...',
+      content: '''Pemilihan Presiden Amerika Serikat 2024 telah memasuki fase yang paling menentukan dengan hanya beberapa minggu tersisa sebelum hari pemungutan suara. Kedua kandidat utama dari Partai Demokrat dan Republik telah mengintensifkan kampanye mereka di negara-negara bagian kunci yang dianggap akan menentukan hasil akhir pemilihan.
+
+Dalam beberapa minggu terakhir, kedua kubu telah menggelar berbagai acara kampanye besar-besaran di negara bagian swing states seperti Pennsylvania, Michigan, Wisconsin, Arizona, dan Georgia. Polling terbaru menunjukkan persaingan yang sangat ketat dengan margin yang sangat tipis antara kedua kandidat.
+
+Isu-isu utama yang menjadi fokus kampanye meliputi ekonomi, kesehatan, imigrasi, dan kebijakan luar negeri. Kedua kandidat berusaha meyakinkan pemilih bahwa mereka memiliki visi dan rencana yang tepat untuk memimpin Amerika Serikat dalam empat tahun ke depan.
+
+Para ahli politik memprediksi bahwa pemilihan kali ini akan menjadi salah satu yang paling kompetitif dalam sejarah Amerika Serikat. Tingkat partisipasi pemilih diperkirakan akan mencapai rekor tertinggi, dengan lebih dari 160 juta orang diproyeksikan akan memberikan suara mereka.
+
+Sistem Electoral College yang unik di Amerika Serikat membuat setiap suara di negara bagian kunci menjadi sangat berharga. Kampanye kedua kubu telah mengalokasikan sumber daya yang besar untuk memobilisasi basis pendukung mereka dan meyakinkan pemilih yang masih ragu-ragu.
+
+Hasil pemilihan ini tidak hanya akan mempengaruhi Amerika Serikat, tetapi juga akan berdampak signifikan terhadap politik global, hubungan internasional, dan ekonomi dunia. Dunia internasional sedang menunggu dengan penuh perhatian untuk melihat siapa yang akan memimpin negara adidaya ini dalam empat tahun ke depan.''',
+      imageUrl: 'us_election',
       category: 'Internasional',
       publishedAt: DateTime.now().subtract(const Duration(hours: 2)),
       author: 'John Smith',
@@ -28,9 +39,21 @@ class NewsService extends ChangeNotifier {
     NewsModel(
       id: '2',
       title: 'Pemerintah Indonesia Luncurkan Program Digitalisasi UMKM',
-      summary: 'Program ini bertujuan untuk meningkatkan daya saing UMKM di era digital...',
-      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
-      imageUrl: '/placeholder.svg?height=200&width=300',
+      summary: 'Program ini bertujuan untuk meningkatkan daya saing UMKM di era digital dengan memberikan pelatihan teknologi dan akses ke platform e-commerce...',
+      content: '''Pemerintah Indonesia melalui Kementerian Koperasi dan UKM telah resmi meluncurkan program digitalisasi UMKM (Usaha Mikro, Kecil, dan Menengah) yang ambisius. Program ini dirancang untuk membantu jutaan pelaku UMKM di seluruh Indonesia agar dapat beradaptasi dengan era digital dan meningkatkan daya saing mereka di pasar global.
+
+Program digitalisasi UMKM ini mencakup berbagai komponen penting, mulai dari pelatihan literasi digital, bantuan akses ke platform e-commerce, hingga dukungan teknologi finansial. Pemerintah telah mengalokasikan anggaran sebesar Rp 5 triliun untuk program ini dalam periode tiga tahun ke depan.
+
+Menteri Koperasi dan UKM menyatakan bahwa program ini merupakan respons terhadap perubahan perilaku konsumen yang semakin digital, terutama setelah pandemi COVID-19. "UMKM harus mampu beradaptasi dengan teknologi digital agar tidak tertinggal dan dapat memanfaatkan peluang pasar yang lebih luas," ujar Menteri.
+
+Salah satu fokus utama program ini adalah memberikan pelatihan kepada para pelaku UMKM tentang cara menggunakan platform digital untuk memasarkan produk mereka. Pelatihan ini akan mencakup penggunaan media sosial untuk marketing, pengelolaan toko online, dan strategi digital marketing yang efektif.
+
+Selain itu, pemerintah juga akan memfasilitasi akses UMKM ke berbagai platform e-commerce besar seperti Tokopedia, Shopee, dan Bukalapak. Kerjasama dengan platform-platform ini diharapkan dapat membantu UMKM menjangkau konsumen yang lebih luas, tidak hanya di tingkat lokal tetapi juga nasional dan internasional.
+
+Program ini juga akan memberikan dukungan dalam hal akses permodalan melalui teknologi finansial. Pemerintah bekerja sama dengan berbagai fintech lending untuk memberikan akses kredit yang lebih mudah dan cepat bagi UMKM yang membutuhkan modal untuk mengembangkan usaha mereka.
+
+Target dari program ini adalah untuk mendigitalisasi setidaknya 10 juta UMKM dalam tiga tahun ke depan. Dengan digitalisasi ini, diharapkan kontribusi UMKM terhadap PDB Indonesia dapat meningkat dari 60% menjadi 65% pada tahun 2027.''',
+      imageUrl: 'umkm_digital',
       category: 'Lokal',
       publishedAt: DateTime.now().subtract(const Duration(hours: 4)),
       author: 'Siti Nurhaliza',
@@ -39,9 +62,21 @@ class NewsService extends ChangeNotifier {
     NewsModel(
       id: '3',
       title: 'Konflik di Timur Tengah Memasuki Fase Baru',
-      summary: 'Upaya diplomatik internasional terus dilakukan untuk mencari solusi damai...',
-      content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
-      imageUrl: '/placeholder.svg?height=200&width=300',
+      summary: 'Upaya diplomatik internasional terus dilakukan untuk mencari solusi damai, sementara situasi kemanusiaan di wilayah tersebut semakin memburuk...',
+      content: '''Konflik yang berkepanjangan di Timur Tengah telah memasuki fase baru yang lebih kompleks dengan melibatkan berbagai aktor regional dan internasional. Situasi ini menimbulkan keprihatinan mendalam dari komunitas internasional karena dampaknya terhadap stabilitas regional dan krisis kemanusiaan yang semakin memburuk.
+
+Dalam perkembangan terbaru, berbagai upaya diplomatik telah diintensifkan oleh negara-negara besar dunia untuk mencari solusi damai. Perserikatan Bangsa-Bangsa (PBB) telah menggelar serangkaian pertemuan darurat untuk membahas eskalasi konflik dan mencari jalan keluar yang dapat diterima oleh semua pihak.
+
+Sekretaris Jenderal PBB dalam pernyataannya menekankan pentingnya dialog dan negosiasi sebagai satu-satunya cara untuk menyelesaikan konflik yang telah berlangsung selama bertahun-tahun ini. "Kekerasan hanya akan melahirkan kekerasan baru. Kita harus kembali ke meja perundingan dan mencari solusi yang adil dan berkelanjutan," ujarnya.
+
+Sementara itu, organisasi-organisasi kemanusiaan internasional melaporkan bahwa situasi kemanusiaan di wilayah konflik semakin memburuk. Jutaan warga sipil terpaksa mengungsi dari rumah mereka, dan akses terhadap kebutuhan dasar seperti makanan, air bersih, dan layanan kesehatan menjadi sangat terbatas.
+
+Uni Eropa telah mengumumkan paket bantuan kemanusiaan tambahan senilai 500 juta euro untuk membantu para pengungsi dan korban konflik. Bantuan ini akan disalurkan melalui berbagai organisasi kemanusiaan internasional yang beroperasi di wilayah tersebut.
+
+Amerika Serikat, Rusia, dan China sebagai anggota tetap Dewan Keamanan PBB juga telah mengadakan pertemuan trilateral untuk membahas langkah-langkah konkret yang dapat diambil untuk meredakan ketegangan. Meskipun memiliki perbedaan pendekatan, ketiga negara sepakat bahwa stabilitas di Timur Tengah sangat penting untuk perdamaian dunia.
+
+Para ahli hubungan internasional menekankan bahwa penyelesaian konflik ini memerlukan pendekatan komprehensif yang tidak hanya mengatasi aspek keamanan, tetapi juga akar permasalahan ekonomi, sosial, dan politik yang mendasari konflik tersebut.''',
+      imageUrl: 'middle_east',
       category: 'Internasional',
       publishedAt: DateTime.now().subtract(const Duration(hours: 6)),
       author: 'Ahmad Rahman',
@@ -119,6 +154,29 @@ class NewsService extends ChangeNotifier {
 
   void _handleNewsDeleted(Map<String, dynamic> data) {
     final newsId = data['id'] as String;
+    
+    // Find the news to get its images before deletion
+    final newsToDelete = _allNews.firstWhere(
+      (news) => news.id == newsId,
+      orElse: () => NewsModel(
+        id: newsId,
+        title: '',
+        summary: '',
+        content: '',
+        imageUrl: '',
+        additionalImages: [],
+        category: '',
+        publishedAt: DateTime.now(),
+        author: '',
+        isFavorite: false,
+      ),
+    );
+    
+    // Delete associated images
+    if (newsToDelete.additionalImages.isNotEmpty) {
+      ImageService().deleteMultipleImages(newsToDelete.additionalImages);
+    }
+    
     _allNews.removeWhere((news) => news.id == newsId);
     _userCreatedNews.removeWhere((news) => news.id == newsId);
     _favoriteNewsIds.remove(newsId);
@@ -126,7 +184,7 @@ class NewsService extends ChangeNotifier {
     notifyListeners();
     
     if (kDebugMode) {
-      print('Real-time: News deleted - $newsId');
+      print('Real-time: News and images deleted - $newsId');
     }
   }
 
@@ -301,6 +359,22 @@ class NewsService extends ChangeNotifier {
       return allNews;
     }
     return allNews.where((news) => news.category == category).toList();
+  }
+
+  Future<void> cleanupNewsImages() async {
+    try {
+      final imageService = ImageService();
+      final activeNewsIds = _allNews.map((news) => news.id).toList();
+      await imageService.cleanupOrphanedImages(activeNewsIds);
+      
+      if (kDebugMode) {
+        print('News images cleanup completed');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error during image cleanup: $e');
+      }
+    }
   }
 
   @override

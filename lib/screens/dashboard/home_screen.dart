@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tugasbesar/lib/services/news_service.dart';
+import 'package:tugasbesar/services/news_service.dart';
+
 import '../../models/news_model.dart';
 import '../../widgets/real_time_news_card.dart';
 import '../../widgets/category_chip.dart';

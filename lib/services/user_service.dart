@@ -12,8 +12,8 @@ class UserService {
   static UserModel getCurrentUser() {
     return _currentUser ?? UserModel(
       id: '1',
-      name: 'John Doe',
-      email: 'john.doe@email.com',
+      name: 'Dede Yamal',
+      email: 'DedeYamal@Barca.id',
       phone: '+62 812-3456-7890',
       bio: 'Seorang pembaca berita yang antusias dan selalu update dengan informasi terkini.',
       joinDate: DateTime(2024, 1, 1),

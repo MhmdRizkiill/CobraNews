@@ -163,58 +163,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         color: Colors.white.withOpacity(0.2),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Text(
-                        'Member sejak ${_formatJoinDate(currentUser.joinDate)}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+
                     ),
                   ],
                 ),
               ),
             ),
-
-            const SizedBox(height: 30),
-
-            // Profile Stats
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _buildStatCard(
-                      icon: Icons.article_outlined,
-                      title: 'Artikel Dibaca',
-                      value: '127',
-                      color: Colors.blue,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildStatCard(
-                      icon: Icons.favorite_outline,
-                      title: 'Favorit',
-                      value: '23',
-                      color: Colors.red,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildStatCard(
-                      icon: Icons.share_outlined,
-                      title: 'Dibagikan',
-                      value: '45',
-                      color: Colors.green,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 30),
 
             // Profile Menu
             Padding(

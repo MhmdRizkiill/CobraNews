@@ -222,7 +222,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> with SingleTickerPr
   Widget _buildGalleryImageWidget(String imagePath, bool isPrimary) {
     Widget imageWidget;
 
-    if (imagePath.startsWith('http') || imagePath.contains('placeholder.svg')) {
+    if (imagePath.startsWith('http') || imagePath.contains('yasa.png')) {
       imageWidget = NewsImageWidget(
         imageUrl: imagePath,
         fit: BoxFit.cover,

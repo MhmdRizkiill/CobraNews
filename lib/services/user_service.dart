@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tugasbesar/models/user_models.dart';
 
 
 class UserService {
   static const String _userKey = 'user_data';
   static UserModel? _currentUser;
+  
+  static var SharedPreferences;
 
   // Get current user
   static UserModel getCurrentUser() {

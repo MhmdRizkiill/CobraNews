@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:tugasbesar/services/news_service.dart';
-
 import '../../models/news_model.dart';
+import '../../services/enhanced_news_service.dart';
 import '../../widgets/real_time_news_card.dart';
 import '../../widgets/category_chip.dart';
 import '../../widgets/connection_status_widget.dart';
+import '../../widgets/api_search_delegate.dart';
+import '../news/news_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
-  final NewsService _newsService = NewsService();
+  final EnhancedNewsService _newsService = EnhancedNewsService();
   String _selectedCategory = 'Semua';
   late AnimationController _refreshController;
 
@@ -126,15 +127,26 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 ),
                 IconButton(
                   icon: const Icon(Icons.search, color: Colors.white),
-                  onPressed: () {
-                    // TODO: Implement search
+                  onPressed: () async {
+                    final selectedNews = await showSearch<NewsModel?>(
+                      context: context,
+                      delegate: ApiSearchDelegate(favoritesOnly: false),
+                    );
+
+                    if (selectedNews != null) {
+                      // Navigate to news detail
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => NewsDetailScreen(news: selectedNews),
+                        ),
+                      );
+                    }
                   },
                 ),
                 IconButton(
                   icon: const Icon(Icons.notifications_outlined, color: Colors.white),
-                  onPressed: () {
-                    // TODO: Implement notifications
-                  },
+                  onPressed: () {},
                 ),
               ],
             ),
@@ -187,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   final filteredNews = _newsService.getNewsByCategory(_selectedCategory);
 
                   if (filteredNews.isEmpty) {
-                    return Container(
+                    return SizedBox(
                       height: 300,
                       child: Center(
                         child: Column(
@@ -205,6 +217,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                                 fontSize: 18,
                                 color: Colors.grey.shade600,
                                 fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Berita akan muncul secara real-time',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey.shade500,
                               ),
                             ),
                           ],
@@ -290,6 +310,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                             RealTimeNewsCard(
                               news: filteredNews.first,
                               isLarge: true,
+                              highlightQuery: '',
                             ),
                           ],
                         ),
@@ -316,9 +337,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       ...filteredNews.skip(1).map((news) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                          child: RealTimeNewsCard(news: news),
+                          child: RealTimeNewsCard(
+                            news: news,
+                            highlightQuery: '',
+                          ),
                         );
-                      }).toList(),
+                      }),
 
                       const SizedBox(height: 100),
                     ],

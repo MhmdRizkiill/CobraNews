@@ -91,16 +91,16 @@ class EnhancedNewsCard extends StatelessWidget {
                         color: Colors.green.withOpacity(0.9),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Row(
+                      child: const Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.photo_camera,
                             color: Colors.white,
                             size: 12,
                           ),
-                          const SizedBox(width: 2),
-                          const Text(
+                          SizedBox(width: 2),
+                          Text(
                             'Local',
                             style: TextStyle(
                               color: Colors.white,

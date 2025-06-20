@@ -35,6 +35,7 @@ Hasil pemilihan ini tidak hanya akan mempengaruhi Amerika Serikat, tetapi juga a
       publishedAt: DateTime.now().subtract(const Duration(hours: 2)),
       author: 'John Smith',
       isFavorite: false,
+      featuredImageUrl: '',
     ),
     NewsModel(
       id: '2',
@@ -57,7 +58,7 @@ Target dari program ini adalah untuk mendigitalisasi setidaknya 10 juta UMKM dal
       category: 'Lokal',
       publishedAt: DateTime.now().subtract(const Duration(hours: 4)),
       author: 'Siti Nurhaliza',
-      isFavorite: true,
+      isFavorite: true, featuredImageUrl: '',
     ),
     NewsModel(
       id: '3',
@@ -80,7 +81,7 @@ Para ahli hubungan internasional menekankan bahwa penyelesaian konflik ini memer
       category: 'Internasional',
       publishedAt: DateTime.now().subtract(const Duration(hours: 6)),
       author: 'Ahmad Rahman',
-      isFavorite: false,
+      isFavorite: false, featuredImageUrl: '',
     ),
   ];
 
@@ -133,7 +134,7 @@ Para ahli hubungan internasional menekankan bahwa penyelesaian konflik ini memer
         title: data['title'] ?? existingNews.title,
         summary: data['summary'] ?? existingNews.summary,
         content: data['content'] ?? existingNews.content,
-        category: data['category'] ?? existingNews.category,
+        category: data['category'] ?? existingNews.category, imageUrl: '',
       );
       
       _allNews[index] = updatedNews;
@@ -168,7 +169,7 @@ Para ahli hubungan internasional menekankan bahwa penyelesaian konflik ini memer
         category: '',
         publishedAt: DateTime.now(),
         author: '',
-        isFavorite: false,
+        isFavorite: false, featuredImageUrl: '',
       ),
     );
     
@@ -204,7 +205,7 @@ Para ahli hubungan internasional menekankan bahwa penyelesaian konflik ini memer
       // Update the news item's favorite status
       final newsIndex = _allNews.indexWhere((news) => news.id == newsId);
       if (newsIndex != -1) {
-        _allNews[newsIndex] = _allNews[newsIndex].copyWith(isFavorite: isFavorite);
+        _allNews[newsIndex] = _allNews[newsIndex].copyWith(isFavorite: isFavorite, imageUrl: '');
       }
       
       notifyListeners();
@@ -318,7 +319,7 @@ Para ahli hubungan internasional menekankan bahwa penyelesaian konflik ini memer
       // Update the news item
       final newsIndex = _allNews.indexWhere((news) => news.id == newsId);
       if (newsIndex != -1) {
-        _allNews[newsIndex] = _allNews[newsIndex].copyWith(isFavorite: newFavoriteStatus);
+        _allNews[newsIndex] = _allNews[newsIndex].copyWith(isFavorite: newFavoriteStatus, imageUrl: '');
       }
       
       notifyListeners();
@@ -346,7 +347,7 @@ Para ahli hubungan internasional menekankan bahwa penyelesaian konflik ini memer
       
       final newsIndex = _allNews.indexWhere((news) => news.id == newsId);
       if (newsIndex != -1) {
-        _allNews[newsIndex] = _allNews[newsIndex].copyWith(isFavorite: !isFavorite);
+        _allNews[newsIndex] = _allNews[newsIndex].copyWith(isFavorite: !isFavorite, imageUrl: '');
       }
       
       notifyListeners();

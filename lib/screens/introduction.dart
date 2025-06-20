@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dashboard/main_dashboard.dart';
 import 'auth/login_screen.dart';
 
 class IntroductionScreen extends StatefulWidget {

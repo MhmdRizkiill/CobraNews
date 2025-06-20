@@ -52,7 +52,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
         setState(() {});
 
         if (images.length > remainingSlots) {
-          _showMessage('Hanya ${remainingSlots} gambar yang dapat ditambahkan (maksimal ${widget.maxImages} gambar)');
+          _showMessage('Hanya $remainingSlots gambar yang dapat ditambahkan (maksimal ${widget.maxImages} gambar)');
         }
       } else if (!widget.allowMultiple || _selectedImages.isEmpty) {
         final image = await _imageService.pickImageFromGallery();
@@ -208,7 +208,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
 
         // Image Grid
         if (_selectedImages.isNotEmpty)
-          Container(
+          SizedBox(
             height: 120,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,

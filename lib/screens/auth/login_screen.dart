@@ -167,10 +167,10 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                 ),
               ),
               const SizedBox(height: 20),
-              Icon(
+              const Icon(
                 Icons.help_outline,
                 size: 48,
-                color: const Color(0xFF1E3A8A),
+                color: Color(0xFF1E3A8A),
               ),
               const SizedBox(height: 16),
               const Text(
@@ -284,7 +284,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                       const SizedBox(height: 40),
 
                       // Logo
-                      const CobraNewsLogo(
+                      const LogoWidget(
                         size: 120,
                         borderRadius: 20,
                       ),
@@ -555,11 +555,11 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                                       ),
                                       GestureDetector(
                                         onTap: _showForgotPasswordBottomSheet,
-                                        child: Text(
+                                        child: const Text(
                                           'Klik di sini',
                                           style: TextStyle(
                                             fontSize: 12,
-                                            color: const Color(0xFF3B82F6),
+                                            color: Color(0xFF3B82F6),
                                             fontWeight: FontWeight.w600,
                                             decoration: TextDecoration.underline,
                                           ),

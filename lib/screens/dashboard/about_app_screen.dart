@@ -73,7 +73,7 @@ class _AboutAppScreenState extends State<AboutAppScreen> {
                           ),
                         ],
                       ),
-                      child: const CobraNewsLogo(size: 80),
+                      child: const LogoWidget(size: 80),
                     ),
                     const SizedBox(height: 20),
                     const Text(
@@ -158,7 +158,7 @@ class _AboutAppScreenState extends State<AboutAppScreen> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  
+
                   _buildFeatureCard(
                     icon: Icons.flash_on,
                     title: 'Berita Real-time',
@@ -166,7 +166,7 @@ class _AboutAppScreenState extends State<AboutAppScreen> {
                     color: Colors.orange,
                   ),
                   const SizedBox(height: 12),
-                  
+
                   _buildFeatureCard(
                     icon: Icons.favorite,
                     title: 'Artikel Favorit',
@@ -174,7 +174,7 @@ class _AboutAppScreenState extends State<AboutAppScreen> {
                     color: Colors.red,
                   ),
                   const SizedBox(height: 12),
-                  
+
                   _buildFeatureCard(
                     icon: Icons.share,
                     title: 'Berbagi Mudah',
@@ -182,7 +182,7 @@ class _AboutAppScreenState extends State<AboutAppScreen> {
                     color: Colors.green,
                   ),
                   const SizedBox(height: 12),
-                  
+
                   _buildFeatureCard(
                     icon: Icons.category,
                     title: 'Multi Kategori',
@@ -190,7 +190,7 @@ class _AboutAppScreenState extends State<AboutAppScreen> {
                     color: Colors.blue,
                   ),
                   const SizedBox(height: 12),
-                  
+
                   _buildFeatureCard(
                     icon: Icons.edit,
                     title: 'CRUD Berita',
@@ -244,10 +244,10 @@ class _AboutAppScreenState extends State<AboutAppScreen> {
                         color: const Color(0xFF1E3A8A).withOpacity(0.2),
                       ),
                     ),
-                    child: Column(
+                    child: const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Hubungi Kami',
                           style: TextStyle(
                             fontSize: 18,
@@ -255,31 +255,31 @@ class _AboutAppScreenState extends State<AboutAppScreen> {
                             color: Color(0xFF1E3A8A),
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        SizedBox(height: 12),
                         Row(
                           children: [
                             Icon(
                               Icons.email_outlined,
-                              color: const Color(0xFF1E3A8A),
+                              color: Color(0xFF1E3A8A),
                               size: 20,
                             ),
-                            const SizedBox(width: 12),
-                            const Text(
+                            SizedBox(width: 12),
+                            Text(
                               'support@cobranews.com',
                               style: TextStyle(fontSize: 16),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8),
                         Row(
                           children: [
                             Icon(
                               Icons.web_outlined,
-                              color: const Color(0xFF1E3A8A),
+                              color: Color(0xFF1E3A8A),
                               size: 20,
                             ),
-                            const SizedBox(width: 12),
-                            const Text(
+                            SizedBox(width: 12),
+                            Text(
                               'www.cobranews.com',
                               style: TextStyle(fontSize: 16),
                             ),

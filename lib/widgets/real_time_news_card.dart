@@ -14,7 +14,7 @@ class RealTimeNewsCard extends StatefulWidget {
     super.key,
     required this.news,
     this.isLarge = false,
-    this.onTap,
+    this.onTap, required String highlightQuery,
   });
 
   @override
@@ -162,7 +162,7 @@ class _RealTimeNewsCardState extends State<RealTimeNewsCard>
                       topLeft: Radius.circular(12),
                       topRight: Radius.circular(12),
                     ),
-                    child: Container(
+                    child: SizedBox(
                       height: widget.isLarge ? 200 : 150,
                       width: double.infinity,
                       child: Stack(

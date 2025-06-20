@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tugasbesar/services/news_service.dart';
+import '../../services/enhanced_news_service.dart';
 import '../../widgets/real_time_news_card.dart';
+import '../../widgets/api_search_delegate.dart';
+import '../news/news_detail_screen.dart';
+import '../../models/news_model.dart';
 
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
@@ -10,7 +13,7 @@ class FavoritesScreen extends StatefulWidget {
 }
 
 class _FavoritesScreenState extends State<FavoritesScreen> {
-  final NewsService _newsService = NewsService();
+  final EnhancedNewsService _newsService = EnhancedNewsService();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +32,21 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.search, color: Colors.white),
-            onPressed: () {
+            onPressed: () async {
+              final selectedNews = await showSearch<NewsModel?>(
+                context: context,
+                delegate: ApiSearchDelegate(favoritesOnly: true),
+              );
+
+              if (selectedNews != null) {
+                // Navigate to news detail
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NewsDetailScreen(news: selectedNews),
+                  ),
+                );
+              }
             },
           ),
         ],
@@ -70,11 +87,25 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Tambahkan berita ke favorit untuk membacanya nanti',
+            'Tambahkan berita ke favorit untuk\nmembacanya nanti',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
               color: Colors.grey.shade500,
+            ),
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton.icon(
+            onPressed: () {
+              // Navigate to home tab
+              DefaultTabController.of(context).animateTo(0);
+            },
+            icon: const Icon(Icons.explore),
+            label: const Text('Jelajahi Berita'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF1E3A8A),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             ),
           ),
         ],
@@ -146,9 +177,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             (context, index) {
               final news = favoriteNews[index];
               return Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: RealTimeNewsCard(news: news),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: RealTimeNewsCard(news: news, highlightQuery: '',),
               );
             },
             childCount: favoriteNews.length,

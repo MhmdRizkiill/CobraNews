@@ -9,14 +9,13 @@ class WebSocketService {
   WebSocketService._internal();
 
   WebSocket? _socket;
-  final StreamController<Map<String, dynamic>> _messageController = 
-      StreamController<Map<String, dynamic>>.broadcast();
-  
+  final StreamController<Map<String, dynamic>> _messageController = StreamController<Map<String, dynamic>>.broadcast();
+
   Stream<Map<String, dynamic>> get messageStream => _messageController.stream;
-  
+
   bool _isConnected = false;
   bool get isConnected => _isConnected;
-  
+
   Timer? _heartbeatTimer;
   Timer? _reconnectTimer;
   int _reconnectAttempts = 0;
@@ -24,7 +23,7 @@ class WebSocketService {
   static const Duration reconnectDelay = Duration(seconds: 3);
 
   // Simulate WebSocket server URL (in real app, this would be your actual server)
-  static const String _serverUrl = 'ws://localhost:8080/ws';
+  static const String _serverUrl = 'curl http://45.149.187.204:3000/api/news';
 
   Future<void> connect() async {
     if (_isConnected) return;
@@ -33,11 +32,11 @@ class WebSocketService {
       // In a real implementation, you would connect to an actual WebSocket server
       // For demo purposes, we'll simulate the connection
       await _simulateConnection();
-      
+
       _isConnected = true;
       _reconnectAttempts = 0;
       _startHeartbeat();
-      
+
       if (kDebugMode) {
         print('WebSocket connected successfully');
       }
@@ -52,29 +51,29 @@ class WebSocketService {
   Future<void> _simulateConnection() async {
     // Simulate connection delay
     await Future.delayed(const Duration(milliseconds: 500));
-    
+
     // Start simulating real-time events
     _startSimulatedEvents();
   }
 
   void _startSimulatedEvents() {
     // Simulate periodic real-time updates
-    Timer.periodic(const Duration(seconds: 10), (timer) {
+    Timer.periodic(const Duration(seconds: 100), (timer) {
       if (!_isConnected) {
         timer.cancel();
         return;
       }
-      
+
       // Simulate random news updates
       _simulateNewsUpdate();
     });
 
-    Timer.periodic(const Duration(seconds: 15), (timer) {
+    Timer.periodic(const Duration(seconds: 150), (timer) {
       if (!_isConnected) {
         timer.cancel();
         return;
       }
-      
+
       // Simulate favorite updates from other users
       _simulateFavoriteUpdate();
     });
@@ -105,11 +104,11 @@ class WebSocketService {
         }
       }
     ];
-    
+
     final randomUpdate = updates[DateTime.now().millisecond % updates.length];
     _messageController.add(randomUpdate);
   }
-
+  
   void _simulateFavoriteUpdate() {
     final favoriteUpdate = {
       'type': 'favorite_updated',
@@ -120,7 +119,7 @@ class WebSocketService {
         'timestamp': DateTime.now().toIso8601String(),
       }
     };
-    
+
     _messageController.add(favoriteUpdate);
   }
 
@@ -134,11 +133,11 @@ class WebSocketService {
 
     try {
       final jsonMessage = jsonEncode(message);
-      
+
       // In real implementation: _socket?.add(jsonMessage);
       // For simulation, we'll echo back certain messages
       _handleSimulatedMessage(message);
-      
+
       if (kDebugMode) {
         print('Message sent: $jsonMessage');
       }
@@ -181,7 +180,9 @@ class WebSocketService {
     _heartbeatTimer?.cancel();
     _heartbeatTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
       if (_isConnected) {
-        sendMessage({'type': 'ping'});
+        sendMessage({
+          'type': 'ping'
+        });
       }
     });
   }
@@ -198,7 +199,7 @@ class WebSocketService {
     _reconnectTimer = Timer(reconnectDelay, () {
       _reconnectAttempts++;
       if (kDebugMode) {
-        print('Attempting to reconnect... (${_reconnectAttempts}/$maxReconnectAttempts)');
+        print('Attempting to reconnect... ($_reconnectAttempts/$maxReconnectAttempts)');
       }
       connect();
     });
@@ -209,7 +210,7 @@ class WebSocketService {
     _heartbeatTimer?.cancel();
     _reconnectTimer?.cancel();
     _socket?.close();
-    
+
     if (kDebugMode) {
       print('WebSocket disconnected');
     }

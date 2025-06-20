@@ -152,7 +152,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen>
                       const SizedBox(height: 40),
 
                       // Logo
-                      const CobraNewsLogo(
+                      const LogoWidget(
                         size: 120,
                         borderRadius: 20,
                       ),

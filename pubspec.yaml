@@ -1,6 +1,8 @@
 name: tugasbesar
-description: A news application with Cobra News logo integration
+description: A comprehensive news application with real-time features
+
 publish_to: 'none'
+
 version: 1.0.0+1
 
 environment:
@@ -10,23 +12,22 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  url_launcher: ^6.2.2
-  share_plus: ^7.2.2
+  http: ^1.1.0
+  url_launcher: ^6.2.1
+  share_plus: ^7.2.1
   image_picker: ^1.0.4
   path_provider: ^2.1.1
   path: ^1.8.3
-  shared_preferences: ^2.2.2
   package_info_plus: ^4.2.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.0
 
 flutter:
   uses-material-design: true
   
-  # Assets configuration
   assets:
     - assets/images/
-  
+    - assets/images/news/

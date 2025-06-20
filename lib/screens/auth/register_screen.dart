@@ -163,7 +163,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                       const SizedBox(height: 20),
 
                       // Logo
-                      const CobraNewsLogo(
+                      const LogoWidget(
                         size: 100,
                         borderRadius: 18,
                       ),

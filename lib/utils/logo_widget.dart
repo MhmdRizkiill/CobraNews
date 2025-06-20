@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class CobraNewsLogo extends StatelessWidget {
+class LogoWidget extends StatelessWidget {
   final double size;
   final Color? backgroundColor;
   final double borderRadius;
   final bool showShadow;
   final EdgeInsets? padding;
 
-  const CobraNewsLogo({
+  const LogoWidget({
     super.key,
     this.size = 120,
     this.backgroundColor,
@@ -144,7 +144,7 @@ class _AnimatedCobraLogoState extends State<AnimatedCobraLogo>
           scale: _scaleAnimation.value,
           child: Transform.rotate(
             angle: _rotationAnimation.value,
-            child: CobraNewsLogo(
+            child: LogoWidget(
               size: widget.size,
               backgroundColor: widget.backgroundColor,
             ),

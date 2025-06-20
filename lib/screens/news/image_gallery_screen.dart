@@ -182,7 +182,7 @@ class _ImageGalleryScreenState extends State<ImageGalleryScreen> {
                 children: [
                   // Image indicators
                   if (widget.images.length > 1)
-                    Container(
+                    SizedBox(
                       height: 60,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,

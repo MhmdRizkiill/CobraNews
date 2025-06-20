@@ -162,7 +162,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen>
                       const SizedBox(height: 40),
 
                       // Logo
-                      const CobraNewsLogo(
+                      const LogoWidget(
                         size: 120,
                         borderRadius: 20,
                       ),

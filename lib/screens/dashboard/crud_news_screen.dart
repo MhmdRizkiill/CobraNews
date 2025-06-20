@@ -20,12 +20,16 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
     final titleController = TextEditingController();
     final summaryController = TextEditingController();
     final contentController = TextEditingController();
+    final featuredImageController = TextEditingController();
+    final tagsController = TextEditingController();
     String selectedCategory = 'Lokal';
+    bool isPublished = true;
     List<String> selectedImages = [];
 
     showDialog(
-      context: context, 
-      useRootNavigator: true,
+      context: context,
+      barrierDismissible: true,
+      useSafeArea: true,
       builder: (context) => Dialog(
         insetPadding: const EdgeInsets.all(16),
         child: Container(
@@ -112,6 +116,26 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
                         maxLines: 5,
                       ),
                       const SizedBox(height: 16),
+                      TextField(
+                        controller: featuredImageController,
+                        decoration: const InputDecoration(
+                          labelText: 'URL Gambar Utama',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.image),
+                          hintText: 'https://example.com/image.jpg',
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: tagsController,
+                        decoration: const InputDecoration(
+                          labelText: 'Tags (pisahkan dengan koma)',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.tag),
+                          hintText: 'teknologi, berita, terbaru',
+                        ),
+                      ),
+                      const SizedBox(height: 16),
                       DropdownButtonFormField<String>(
                         value: selectedCategory,
                         decoration: const InputDecoration(
@@ -119,7 +143,7 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
                           border: OutlineInputBorder(),
                           prefixIcon: Icon(Icons.category),
                         ),
-                        items: ['Lokal', 'Internasional'].map((category) {
+                        items: ['Lokal', 'Internasional', 'Teknologi', 'Olahraga', 'Ekonomi'].map((category) {
                           return DropdownMenuItem(
                             value: category,
                             child: Text(category),
@@ -127,6 +151,17 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
                         }).toList(),
                         onChanged: (value) {
                           selectedCategory = value!;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      SwitchListTile(
+                        title: const Text('Publikasikan Berita'),
+                        subtitle: Text(isPublished ? 'Berita akan dipublikasikan' : 'Berita disimpan sebagai draft'),
+                        value: isPublished,
+                        onChanged: (value) {
+                          setState(() {
+                            isPublished = value;
+                          });
                         },
                       ),
                     ],
@@ -164,11 +199,18 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
 
                             // Save images to app directory
                             List<String> savedImagePaths = [];
+                            String featuredImageUrl = featuredImageController.text.trim();
+                            
                             if (selectedImages.isNotEmpty) {
                               try {
                                 final imageService = ImageService();
                                 final tempFiles = selectedImages.map((path) => File(path)).toList();
                                 savedImagePaths = await imageService.saveMultipleImagesToAppDirectory(tempFiles, newsId);
+                                
+                                // Use first local image as featured if no URL provided
+                                if (featuredImageUrl.isEmpty && savedImagePaths.isNotEmpty) {
+                                  featuredImageUrl = savedImagePaths.first;
+                                }
                               } catch (e) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
@@ -179,17 +221,26 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
                               }
                             }
 
+                            // Parse tags
+                            final tags = tagsController.text
+                                .split(',')
+                                .map((tag) => tag.trim())
+                                .where((tag) => tag.isNotEmpty)
+                                .toList();
+
                             final news = NewsModel(
                               id: newsId,
                               title: titleController.text,
                               summary: summaryController.text,
                               content: contentController.text,
-                              imageUrl: savedImagePaths.isNotEmpty ? savedImagePaths.first : '/placeholder.svg?height=200&width=300',
+                              featuredImageUrl: featuredImageUrl,
                               additionalImages: savedImagePaths,
                               category: selectedCategory,
+                              tags: tags,
+                              isPublished: isPublished,
                               publishedAt: DateTime.now(),
                               author: 'Saya',
-                              isFavorite: false,
+                              isFavorite: false, imageUrl: '',
                             );
 
                             try {
@@ -202,7 +253,7 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
                                     children: [
                                       const Icon(Icons.check_circle, color: Colors.white),
                                       const SizedBox(width: 8),
-                                      Text('Berita berhasil ditambahkan${savedImagePaths.isNotEmpty ? ' dengan ${savedImagePaths.length} gambar' : ''}!'),
+                                      Text('Berita berhasil ${isPublished ? 'dipublikasikan' : 'disimpan sebagai draft'}!'),
                                     ],
                                   ),
                                   backgroundColor: Colors.green,
@@ -229,7 +280,7 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
                           backgroundColor: const Color(0xFF1E3A8A),
                           foregroundColor: Colors.white,
                         ),
-                        child: const Text('Simpan'),
+                        child: Text(isPublished ? 'Publikasikan' : 'Simpan Draft'),
                       ),
                     ),
                   ],
@@ -240,7 +291,7 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
         ),
       ),
     );
-  }
+}
 
   void _editNews(NewsModel news) {
     final titleController = TextEditingController(text: news.title);
@@ -251,7 +302,6 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
 
     showDialog(
       context: context,
-      useRootNavigator: true,
       builder: (context) => Dialog(
         insetPadding: const EdgeInsets.all(16),
         child: Container(

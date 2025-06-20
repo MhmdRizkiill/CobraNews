@@ -182,9 +182,9 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> with SingleTickerPr
                   ),
                   child: Text(
                     '${images.length} foto',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 12,
-                      color: const Color(0xFF1E3A8A),
+                      color: Color(0xFF1E3A8A),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -332,7 +332,7 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> with SingleTickerPr
                           onPressed: _isTogglingFavorite ? null : _toggleFavorite,
                         ),
                         if (_isTogglingFavorite)
-                          Positioned.fill(
+                          const Positioned.fill(
                             child: Center(
                               child: SizedBox(
                                 width: 16,
@@ -590,12 +590,12 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> with SingleTickerPr
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                const Text(
                                   'Artikel Lengkap',
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
-                                    color: const Color(0xFF1E3A8A),
+                                    color: Color(0xFF1E3A8A),
                                   ),
                                 ),
 
@@ -707,8 +707,8 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> with SingleTickerPr
       ),
       child: Text(
         tag,
-        style: TextStyle(
-          color: const Color(0xFF1E3A8A),
+        style: const TextStyle(
+          color: Color(0xFF1E3A8A),
           fontSize: 12,
           fontWeight: FontWeight.w500,
         ),

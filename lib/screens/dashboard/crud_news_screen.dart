@@ -116,6 +116,47 @@ class _CrudNewsScreenState extends State<CrudNewsScreen> {
                         maxLines: 5,
                       ),
                       const SizedBox(height: 16),
+<<<<<<< HEAD
+=======
+                      TextField(
+                        controller: featuredImageController,
+                        decoration: const InputDecoration(
+                          labelText: 'URL Gambar Utama',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.image),
+                          hintText: 'https://example.com/image.jpg',
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: tagsController,
+                        decoration: const InputDecoration(
+                          labelText: 'Tags (pisahkan dengan koma)',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.tag),
+                          hintText: 'teknologi, berita, terbaru',
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      DropdownButtonFormField<String>(
+                        value: selectedCategory,
+                        decoration: const InputDecoration(
+                          labelText: 'Kategori',
+                          border: OutlineInputBorder(),
+                          prefixIcon: Icon(Icons.category),
+                        ),
+                        items: ['Lokal', 'Internasional', 'Teknologi', 'Olahraga', 'Ekonomi'].map((category) {
+                          return DropdownMenuItem(
+                            value: category,
+                            child: Text(category),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          selectedCategory = value!;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+>>>>>>> 1e076a687b9e755a82dbaf959693cfa0709a7952
                       SwitchListTile(
                         title: const Text('Publikasikan Berita'),
                         subtitle: Text(isPublished ? 'Berita akan dipublikasikan' : 'Berita disimpan sebagai draft'),

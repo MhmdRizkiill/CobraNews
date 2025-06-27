@@ -403,6 +403,13 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> with SingleTickerPr
                                 horizontal: 8,
                                 vertical: 4,
                               ),
+<<<<<<< HEAD
+=======
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+>>>>>>> 1e076a687b9e755a82dbaf959693cfa0709a7952
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -414,6 +421,18 @@ class _NewsDetailScreenState extends State<NewsDetailScreen> with SingleTickerPr
                                       shape: BoxShape.circle,
                                     ),
                                   ),
+<<<<<<< HEAD
+=======
+                                  const SizedBox(width: 4),
+                                  const Text(
+                                    'LIVE',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+>>>>>>> 1e076a687b9e755a82dbaf959693cfa0709a7952
                                 ],
                               ),
                             ),

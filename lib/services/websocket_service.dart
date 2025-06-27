@@ -23,7 +23,11 @@ class WebSocketService {
   static const Duration reconnectDelay = Duration(seconds: 3);
 
   // Simulate WebSocket server URL (in real app, this would be your actual server)
+<<<<<<< HEAD
   static const String _serverUrl = 'http://45.149.187.204:3000/api/news';
+=======
+  static const String _serverUrl = 'curl http://45.149.187.204:3000/api/news';
+>>>>>>> 1e076a687b9e755a82dbaf959693cfa0709a7952
 
   Future<void> connect() async {
     if (_isConnected) return;
@@ -58,7 +62,11 @@ class WebSocketService {
 
   void _startSimulatedEvents() {
     // Simulate periodic real-time updates
+<<<<<<< HEAD
     Timer.periodic(const Duration(seconds: 60), (timer) {
+=======
+    Timer.periodic(const Duration(seconds: 100), (timer) {
+>>>>>>> 1e076a687b9e755a82dbaf959693cfa0709a7952
       if (!_isConnected) {
         timer.cancel();
         return;
@@ -68,7 +76,11 @@ class WebSocketService {
       _simulateNewsUpdate();
     });
 
+<<<<<<< HEAD
     Timer.periodic(const Duration(seconds: 30), (timer) {
+=======
+    Timer.periodic(const Duration(seconds: 150), (timer) {
+>>>>>>> 1e076a687b9e755a82dbaf959693cfa0709a7952
       if (!_isConnected) {
         timer.cancel();
         return;
@@ -85,6 +97,7 @@ class WebSocketService {
         'type': 'news_created',
         'data': {
           'id': DateTime.now().millisecondsSinceEpoch.toString(),
+<<<<<<< HEAD
           'title': 'Lamine Yamal Nikmati Sukses Barcelona Hancurkan Madrid',
           'summary': 'Barcelona berhasil mengalahkan Real Madrid dengan skor telak...',
           'content': 'Barcelona - Barcelona mendominasi total Real Madrid di 2024/2025. Bintang muda Barca Lamine Yamal mengaku sangat menikmati momen-momen tersebut. Barca mengalahkan Madrid di masing-masing dari empat El Clasico domestik. Di Liga Spanyol, Blaugrana menang telak 4-0 di Santiago Bernabeu, lalu unggul 4-3 di laga kandang. Barcelona juga mempecundangi rival abadinya itu di final Piala Super Spanyol 5-2 dan final Copa del Rey 3-2.',
@@ -146,6 +159,13 @@ class WebSocketService {
           'content': 'Dalam Podcast merdeka Kamis (19/6), pengamat Timur Tengah Faisal Assegaf membeberkan konteks perang Iran versus Israel yang kini masih berlangsung. Pengamat yang pernah beberapa kali berkunjung ke Iran, Gaza, Lebanon, dan Libya itu mengatakan posisi Iran dalam perang melawan Israel saat ini sedang di atas angin. Berikut wawancara merdeka.com dengan Faisal Assegaf: Tanya (T): Soal Iran-Israel ini kalau kita lihat ini kan sekarang memanas. Padahal bukannya dulu dalam sejarahnya itu mereka sangat mesra ya? Jawab (J): Jadi waktu zaman kerajaan Iran, Shahreza Pahlavi, rajanya waktu itu, memang hubungan Iran dengan Israel, dengan Amerika itu baik. Makanya dulu ada kedutaan Amerika kan. Terus Iran juga menjadi negara berpenduduk mayoritas muslim kedua yang mengakui berdirinya Israel setelah Turki. Jadi Turki tahun 1949 (mengakui), karena Israel berdiri 14 Mei 1948.',
           'category': 'Lokal',
           'author': 'DedeYamal',
+=======
+          'title': 'Breaking: New Development in Technology Sector',
+          'summary': 'Major breakthrough announced by leading tech companies...',
+          'content': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
+          'category': 'Internasional',
+          'author': 'Tech Reporter',
+>>>>>>> 1e076a687b9e755a82dbaf959693cfa0709a7952
           'publishedAt': DateTime.now().toIso8601String(),
           'imageUrl': '/placeholder.svg?height=200&width=300',
           'isFavorite': false,
@@ -164,7 +184,11 @@ class WebSocketService {
     final randomUpdate = updates[DateTime.now().millisecond % updates.length];
     _messageController.add(randomUpdate);
   }
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> 1e076a687b9e755a82dbaf959693cfa0709a7952
   void _simulateFavoriteUpdate() {
     final favoriteUpdate = {
       'type': 'favorite_updated',

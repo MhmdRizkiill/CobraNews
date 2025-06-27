@@ -1,8 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
+<<<<<<< HEAD
         android:label="Cobra News"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
+=======
+        android:label="tugasbesar"
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher">
+>>>>>>> 1e076a687b9e755a82dbaf959693cfa0709a7952
         <activity
             android:name=".MainActivity"
             android:exported="true"
